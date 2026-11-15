@@ -4,16 +4,16 @@
   {
    "check": "fresh_shot_data",
    "ok": true,
-   "value": "43733419462",
-   "limit": "this run (43733419462)",
+   "value": "43735976347",
+   "limit": "this run (43735976347)",
    "severity": "ok"
   },
   {
    "check": "length_s",
-   "ok": false,
-   "value": 50.5,
+   "ok": true,
+   "value": 51.2,
    "limit": "60s +-15%",
-   "severity": "warn"
+   "severity": "ok"
   },
   {
    "check": "loudness_lufs",
@@ -39,21 +39,31 @@
   {
    "check": "frozen_frames",
    "ok": false,
-   "value": 1,
+   "value": 2,
    "limit": 0,
    "severity": "warn"
   },
   {
+   "check": "frozen_shots",
+   "ok": null,
+   "severity": "info",
+   "limit": "",
+   "value": [
+    "C01S011 scene/tiltUp/shock at 28.6s",
+    "C02S003 scene/panLeft/lean at 41.3s"
+   ]
+  },
+  {
    "check": "av_sync_s",
    "ok": true,
-   "value": -0.004,
+   "value": -0.022,
    "limit": "<= 0.1",
    "severity": "ok"
   },
   {
    "check": "shot_count",
    "ok": true,
-   "value": 15,
+   "value": 17,
    "limit": [
     13,
     17
@@ -64,8 +74,8 @@
    "check": "shot_len_s",
    "ok": true,
    "value": [
-    1.7,
-    4.8
+    1.52,
+    4.74
    ],
    "limit": [
     1.5,
@@ -76,21 +86,21 @@
   {
    "check": "hook_shots_8s",
    "ok": true,
-   "value": 4,
+   "value": 5,
    "limit": ">= 3",
    "severity": "ok"
   },
   {
    "check": "interrupt_max_gap_s",
    "ok": true,
-   "value": 16.2,
+   "value": 16.3,
    "limit": "<= 15(+3 at the end)",
    "severity": "ok"
   },
   {
    "check": "locations",
    "ok": true,
-   "value": 6,
+   "value": 7,
    "limit": [
     4,
     5
@@ -138,9 +148,25 @@
    ]
   },
   {
+   "check": "whisper_heard",
+   "ok": null,
+   "severity": "info",
+   "limit": "",
+   "value": [
+    {
+     "script": "neighbours",
+     "heard": "neighbors"
+    },
+    {
+     "script": "2500",
+     "heard": "2 500"
+    }
+   ]
+  },
+  {
    "check": "speaking_rate_wpm",
    "ok": false,
-   "value": 170,
+   "value": 168,
    "limit": [
     125,
     150
@@ -152,7 +178,7 @@
    "ok": true,
    "value": [
     0.0083,
-    0.0093
+    0.0083
    ],
    "limit": "> 0.002 rms in every chapter",
    "severity": "ok"
@@ -179,23 +205,23 @@
   },
   {
    "check": "ui_legibility_360p",
-   "ok": false,
+   "ok": true,
    "value": [
     {
-     "id": "C01S007",
+     "id": "C01S008",
      "kind": "card",
-     "contrast": 5.98,
-     "edges": 0.0175
+     "contrast": 6.26,
+     "edges": 0.028
     },
     {
-     "id": "C02S004",
+     "id": "C02S005",
      "kind": "options",
-     "contrast": 3.49,
-     "edges": 0.0098
+     "contrast": 5.33,
+     "edges": 0.01
     }
    ],
    "limit": "contrast >= 3:1, edges >= 0.01 (card/option stills)",
-   "severity": "fail"
+   "severity": "ok"
   },
   {
    "check": "ui_style_differs",
@@ -241,6 +267,6 @@
   }
  ],
  "fixes": [],
- "fails": 1,
- "warns": 3
+ "fails": 0,
+ "warns": 2
 }
