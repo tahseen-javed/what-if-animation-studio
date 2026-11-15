@@ -39,4 +39,4 @@ jobs:
       - run: cd what-if-studio && npm ci --no-audit --no-fund
       - run: python tools/gallery.py "${{ inputs.sets }}" new && python tools/gallery.py all all
       - uses: actions/upload-artifact@v4
-        with: { name: gallery, path: "what-if-studio/out/gallery-*/sheet.jpg\nwhat-if-studio/out/gallery-*/distances.json", retention-days: 14 }
+        with: { name: gallery, path: "what-if-studio/out/gallery-*/sheet.jpg\nwhat-if-studio/out/gallery-*/calibration.jpg\nwhat-if-studio/out/gallery-*/distances.json", retention-days: 14 }
