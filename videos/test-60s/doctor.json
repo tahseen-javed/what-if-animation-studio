@@ -2,16 +2,23 @@
  "video": "test-60s",
  "checks": [
   {
+   "check": "fresh_shot_data",
+   "ok": true,
+   "value": "43729168943",
+   "limit": "this run (43729168943)",
+   "severity": "ok"
+  },
+  {
    "check": "length_s",
    "ok": true,
-   "value": 55.6,
+   "value": 59.8,
    "limit": "60s +-15%",
    "severity": "ok"
   },
   {
    "check": "loudness_lufs",
    "ok": true,
-   "value": -14.0,
+   "value": -14.1,
    "limit": "-14 +-0.5",
    "severity": "ok"
   },
@@ -38,18 +45,18 @@
   },
   {
    "check": "av_sync_s",
-   "ok": false,
-   "value": -0.124,
+   "ok": true,
+   "value": -0.006,
    "limit": "<= 0.1",
-   "severity": "fail"
+   "severity": "ok"
   },
   {
    "check": "shot_count",
    "ok": true,
-   "value": 14,
+   "value": 18,
    "limit": [
-    14,
-    19
+    15,
+    20
    ],
    "severity": "ok"
   },
@@ -57,8 +64,8 @@
    "check": "shot_len_s",
    "ok": true,
    "value": [
-    1.61,
-    4.77
+    1.62,
+    4.93
    ],
    "limit": [
     1.5,
@@ -75,15 +82,15 @@
   },
   {
    "check": "interrupt_max_gap_s",
-   "ok": false,
-   "value": 22.6,
+   "ok": true,
+   "value": 17.8,
    "limit": "<= 15(+3 at the end)",
-   "severity": "warn"
+   "severity": "ok"
   },
   {
    "check": "locations",
    "ok": true,
-   "value": 5,
+   "value": 7,
    "limit": [
     4,
     5
@@ -92,10 +99,10 @@
   },
   {
    "check": "consecutive_framing",
-   "ok": true,
-   "value": 0,
+   "ok": false,
+   "value": 1,
    "limit": 0,
-   "severity": "ok"
+   "severity": "fail"
   },
   {
    "check": "background_return_20s",
@@ -113,27 +120,38 @@
   },
   {
    "check": "voice_vs_script_pct",
-   "ok": false,
-   "value": 94.3,
+   "ok": true,
+   "value": 97.9,
    "limit": ">= 95",
-   "severity": "fail"
+   "severity": "ok"
+  },
+  {
+   "check": "unmatched_words",
+   "ok": null,
+   "severity": "info",
+   "limit": "",
+   "value": [
+    "thousand",
+    "five",
+    "hundred"
+   ]
   },
   {
    "check": "speaking_rate_wpm",
-   "ok": false,
-   "value": 155,
+   "ok": true,
+   "value": 143,
    "limit": [
     125,
     150
    ],
-   "severity": "warn"
+   "severity": "ok"
   },
   {
    "check": "music_present",
    "ok": true,
    "value": [
-    0.004,
-    0.004
+    0.0086,
+    0.0097
    ],
    "limit": "> 0.002 rms in every chapter",
    "severity": "ok"
@@ -195,6 +213,6 @@
   }
  ],
  "fixes": [],
- "fails": 2,
- "warns": 2
+ "fails": 1,
+ "warns": 0
 }

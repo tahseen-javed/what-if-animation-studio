@@ -3,144 +3,184 @@
  "created": "2026-11-15T14:05:12+00:00",
  "shots": [
   {
-   "set": "study",
+   "set": "lounge",
+   "angle": "mediumLow",
+   "cam": "panLeft",
+   "light": "storm",
+   "pose": "wave",
+   "trans": "blur",
+   "prop": "GamePad",
+   "tuple": "lounge|mediumLow|storm|wave|panLeft|GamePad|blur"
+  },
+  {
+   "set": "stairwell",
    "angle": "wide",
-   "cam": "pullOut",
-   "light": "night",
-   "pose": "lean",
+   "cam": "dollyZoom",
+   "light": "dusk",
+   "pose": "shrug",
    "trans": "dipBlack",
    "prop": "",
-   "tuple": "study|wide|night|lean|pullOut||dipBlack"
+   "tuple": "stairwell|wide|dusk|shrug|dollyZoom||dipBlack"
+  },
+  {
+   "set": "kitchen",
+   "angle": "close",
+   "cam": "arc",
+   "light": "noir",
+   "pose": "lean",
+   "trans": "dipWhite",
+   "prop": "",
+   "tuple": "kitchen|close|noir|lean|arc||dipWhite"
+  },
+  {
+   "set": "classroom",
+   "angle": "mediumLow",
+   "cam": "settle",
+   "light": "alarm",
+   "pose": "present",
+   "trans": "dipWhite",
+   "prop": "",
+   "tuple": "classroom|mediumLow|alarm|present|settle||dipWhite"
+  },
+  {
+   "set": "bedroom",
+   "angle": "twoShot",
+   "cam": "pullOut",
+   "light": "storm",
+   "pose": "think",
+   "trans": "dipBlack",
+   "prop": "",
+   "tuple": "bedroom|twoShot|storm|think|pullOut||dipBlack"
+  },
+  {
+   "set": "rooftop",
+   "angle": "close",
+   "cam": "panLeft",
+   "light": "noir",
+   "pose": "point",
+   "trans": "blur",
+   "prop": "",
+   "tuple": "rooftop|close|noir|point|panLeft||blur"
+  },
+  {
+   "set": "rooftop",
+   "angle": "twoShot",
+   "cam": "dollyZoom",
+   "light": "noir",
+   "pose": "cool",
+   "trans": "blur",
+   "prop": "",
+   "tuple": "rooftop|twoShot|noir|cool|dollyZoom||blur"
   },
   {
    "set": "study",
-   "angle": "extremeClose",
-   "cam": "settle",
-   "light": "night",
-   "pose": "shrug",
-   "trans": "cut",
-   "prop": "Amp",
-   "tuple": "study|extremeClose|night|shrug|settle|Amp|cut"
+   "angle": "wide",
+   "cam": "pushIn",
+   "light": "alarm",
+   "pose": "card",
+   "trans": "zoom",
+   "prop": "",
+   "tuple": "study|wide|alarm|card|pushIn||zoom"
   },
   {
    "set": "study",
    "angle": "mediumLow",
-   "cam": "panLeft",
-   "light": "night",
+   "cam": "arc",
+   "light": "alarm",
    "pose": "nod",
    "trans": "blur",
    "prop": "",
-   "tuple": "study|mediumLow|night|nod|panLeft||blur"
+   "tuple": "study|mediumLow|alarm|nod|arc||blur"
   },
   {
    "set": "study",
-   "angle": "wide",
-   "cam": "settle",
-   "light": "night",
-   "pose": "crossArms",
+   "angle": "wideLow",
+   "cam": "arc",
+   "light": "alarm",
+   "pose": "present",
    "trans": "cut",
    "prop": "",
-   "tuple": "study|wide|night|crossArms|settle||cut"
+   "tuple": "study|wideLow|alarm|present|arc||cut"
   },
   {
-   "set": "stairwell",
-   "angle": "twoShot",
-   "cam": "drift",
-   "light": "noir",
-   "pose": "point",
-   "trans": "dipWhite",
+   "set": "study",
+   "angle": "close",
+   "cam": "crashZoom",
+   "light": "alarm",
+   "pose": "shock",
+   "trans": "flash",
    "prop": "",
-   "tuple": "stairwell|twoShot|noir|point|drift||dipWhite"
+   "tuple": "study|close|alarm|shock|crashZoom||flash"
+  },
+  {
+   "set": "study",
+   "angle": "mediumLow",
+   "cam": "arc",
+   "light": "alarm",
+   "pose": "lookAround",
+   "trans": "cut",
+   "prop": "",
+   "tuple": "study|mediumLow|alarm|lookAround|arc||cut"
+  },
+  {
+   "set": "study",
+   "angle": "wideLow",
+   "cam": "pullOut",
+   "light": "alarm",
+   "pose": "think",
+   "trans": "cut",
+   "prop": "",
+   "tuple": "study|wideLow|alarm|think|pullOut||cut"
   },
   {
    "set": "stairwell",
    "angle": "mediumLow",
    "cam": "riseUp",
-   "light": "noir",
+   "light": "storm",
    "pose": "present",
-   "trans": "cut",
+   "trans": "blur",
    "prop": "",
-   "tuple": "stairwell|mediumLow|noir|present|riseUp||cut"
+   "tuple": "stairwell|mediumLow|storm|present|riseUp||blur"
   },
   {
    "set": "stairwell",
-   "angle": "twoShot",
-   "cam": "pullOut",
-   "light": "noir",
-   "pose": "tremble",
-   "trans": "cut",
-   "prop": "Guitar",
-   "tuple": "stairwell|twoShot|noir|tremble|pullOut|Guitar|cut"
-  },
-  {
-   "set": "rooftop",
    "angle": "wide",
-   "cam": "settle",
-   "light": "noir",
-   "pose": "card",
-   "trans": "zoom",
-   "prop": "",
-   "tuple": "rooftop|wide|noir|card|settle||zoom"
-  },
-  {
-   "set": "rooftop",
-   "angle": "mediumLow",
-   "cam": "dollyZoom",
-   "light": "noir",
-   "pose": "crossArms",
-   "trans": "blur",
-   "prop": "Guitar",
-   "tuple": "rooftop|mediumLow|noir|crossArms|dollyZoom|Guitar|blur"
-  },
-  {
-   "set": "rooftop",
-   "angle": "twoShot",
    "cam": "arc",
-   "light": "noir",
-   "pose": "shock",
-   "trans": "cut",
-   "prop": "",
-   "tuple": "rooftop|twoShot|noir|shock|arc||cut"
-  },
-  {
-   "set": "lounge",
-   "angle": "mediumLow",
-   "cam": "tiltUp",
    "light": "storm",
    "pose": "lookAround",
-   "trans": "dipBlack",
-   "prop": "",
-   "tuple": "lounge|mediumLow|storm|lookAround|tiltUp||dipBlack"
-  },
-  {
-   "set": "lounge",
-   "angle": "close",
-   "cam": "crashZoom",
-   "light": "storm",
-   "pose": "shock",
-   "trans": "flash",
-   "prop": "",
-   "tuple": "lounge|close|storm|shock|crashZoom||flash"
-  },
-  {
-   "set": "lounge",
-   "angle": "wide",
-   "cam": "dollyZoom",
-   "light": "storm",
-   "pose": "breathe",
    "trans": "cut",
-   "prop": "Guitar",
-   "tuple": "lounge|wide|storm|breathe|dollyZoom|Guitar|cut"
+   "prop": "",
+   "tuple": "stairwell|wide|storm|lookAround|arc||cut"
+  },
+  {
+   "set": "classroom",
+   "angle": "wide",
+   "cam": "tiltUp",
+   "light": "alarm",
+   "pose": "insert",
+   "trans": "flash",
+   "prop": "Phone",
+   "tuple": "classroom|wide|alarm|insert|tiltUp|Phone|flash"
   },
   {
    "set": "classroom",
    "angle": "mediumLow",
-   "cam": "tiltUp",
-   "light": "dusk",
-   "pose": "shrug",
+   "cam": "dollyZoom",
+   "light": "alarm",
+   "pose": "think",
    "trans": "blur",
    "prop": "",
-   "tuple": "classroom|mediumLow|dusk|shrug|tiltUp||blur"
+   "tuple": "classroom|mediumLow|alarm|think|dollyZoom||blur"
+  },
+  {
+   "set": "classroom",
+   "angle": "wide",
+   "cam": "pushIn",
+   "light": "alarm",
+   "pose": "options",
+   "trans": "zoom",
+   "prop": "",
+   "tuple": "classroom|wide|alarm|options|pushIn||zoom"
   }
  ]
 }
