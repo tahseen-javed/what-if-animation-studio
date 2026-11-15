@@ -16,7 +16,8 @@ for i, s in enumerate(sets):
     sid = f'G{i + 1:03d}'
     segs.append({'shot': sid, 'a': i, 'b': i + 1, 't0': 0, 't1': 1})
     infos.append({'id': sid, 'size': 'wide', 'key': 30, 'len': 60, 'first': i})
-    specs[sid] = {'id': sid, 'kind': 'scene', 'set': s, 'angle': 'wide', 'cam': 'static', 'light': 'neutral', 'cast': []}
+    specs[sid] = {'id': sid, 'kind': 'scene', 'set': s, 'angle': 'wide', 'cam': 'static', 'light': 'neutral', 'cast': [],
+                 'v': {k: vals[0] for k, vals in LIB['sets'][s]['variants'].items()}}  # the variant videos use first
 out = STUDIO / 'out' / f'gallery-{label}'
 out.mkdir(parents=True, exist_ok=True)
 save(out / 'plan.json', {'plan': {'id': label, 'dna': {}, 'timeline': {'slug': label, 'title': label, 'fps': 30, 'total': n, 'segments': segs, 'shots': infos, 'fx': [], 'audio': {}}, 'specs': specs}})
