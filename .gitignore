@@ -26,3 +26,4 @@ docs/MASTER_SYSTEM.md
 docs/QUALITY_LOG.md
 __pycache__/
 *.pyc
+samples/

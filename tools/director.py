@@ -186,6 +186,8 @@ def main(vid):
                     tup = '|'.join(map(str, (scene['set'], angle, scene['light'], pose, cam, prop, trans)))
                     if tup not in used and counts.get(f"{scene['set']}|{angle}|{cam}", 0) < cap:
                         break
+                if b - a >= 2.8 and not LIB['poses'].get(pose, {}).get('loop') and cam in ('static', 'tiltUp', 'tiltDown', 'panLeft', 'panRight', 'drift', 'settle'):
+                    cam = rng.choice(['pushIn', 'arc', 'dollyZoom', 'riseUp'])  # motion floor: a still pose on a long shot gets a moving camera
                 hx = LIB['sets'][scene['set']]
                 cast = [{**hero, 'pose': pose, 'yaw': (0.35 if scene['hm'] < scene['fm'] else -0.35) if scene['friend'] else 0,
                          'facing': 1 if scene['hm'] < 2 else -1}]

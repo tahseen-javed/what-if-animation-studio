@@ -6,7 +6,7 @@ import { makeRoom, RoomShell, BackWindow, Pendant, WallLight, Box, FloorShadow, 
 type BoxDef = [number, number, number, number, number, number, string, (string | null)?, ('shelf' | 'rack' | null)?];
 export type ProcDef = {
   theme: string; vp: [number, number]; back: [number, number, number, number]; depth?: number; floor?: 'boards' | 'tiles';
-  wall?: string; side?: string; floorC?: string; ceiling?: string; win?: [number, number, number, number]; night?: boolean; cols?: number;
+  wall?: string; side?: string; floorC?: string; ceiling?: string; win?: [number, number, number, number]; night?: boolean; cols?: number; sky?: 'day' | 'blinds';
   pend?: [number, number][]; lamps?: [number, number, number][]; boxes?: BoxDef[]; plants?: [number, number][];
   frames?: [number, number, number, number][]; clock?: [number, number]; glow?: 'warm' | 'cool' | 'red'; veil?: number;
 };
@@ -26,6 +26,12 @@ export const ProcSet: React.FC<{ d: ProcDef; t: number; id: string }> = ({ d, t,
     <g>
       <RoomShell r={R} id={id} floor={d.floor ?? 'boards'} wall={d.wall} side={d.side} floorC={d.floorC} ceiling={d.ceiling} />
       {d.win ? <BackWindow r={R} id={`${id}w`} t={t} x0={d.win[0]} x1={d.win[1]} y0={d.win[2]} y1={d.win[3]} cols={d.cols ?? 2} curtains night={d.night} sun={{ x: (d.win[0] + d.win[1]) / 2, y: d.win[3] - 30 }} /> : null}
+      {d.win && d.sky === 'day' ? <rect x={d.win[0]} y={d.win[2]} width={d.win[1] - d.win[0]} height={d.win[3] - d.win[2]} fill="#9FD3FF" opacity={0.55} style={{ mixBlendMode: 'screen' }} /> : null}
+      {d.win && d.sky === 'blinds'
+        ? Array.from({ length: Math.floor((d.win[3] - d.win[2]) / 16) }, (_, i) => (
+            <rect key={i} x={d.win![0]} y={d.win![2] + i * 16} width={d.win![1] - d.win![0]} height={10} fill="#D8D2C4" opacity={0.92} />
+          ))
+        : null}
       {(d.frames ?? []).map(([x, y, w, h], i) => <WallFrame key={i} x={x} y={y} w={w} h={h} art={(i % 3) as 0 | 1 | 2} />)}
       {d.clock ? <WallClock x={d.clock[0]} y={d.clock[1]} t={t} /> : null}
       {(d.lamps ?? []).map(([u, v, w], i) => <WallLight key={i} r={R} u={u} v={v} w={w} />)}

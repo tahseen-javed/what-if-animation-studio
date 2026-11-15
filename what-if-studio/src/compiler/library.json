@@ -914,7 +914,8 @@
     320
    ],
    "glow": "cool",
-   "veil": 0.32
+   "veil": 0.32,
+   "sky": "blinds"
   },
   "library": {
    "theme": "culture",
@@ -1013,10 +1014,10 @@
    ],
    "depth": 3.5,
    "floor": "tiles",
-   "wall": "#DDE6EA",
-   "side": "#C5D0D6",
-   "floorC": "#B9C4C9",
-   "ceiling": "#E8EEF0",
+   "wall": "#23313F",
+   "side": "#1B2733",
+   "floorC": "#2E3C48",
+   "ceiling": "#18222C",
    "win": [
     600,
     900,
@@ -1045,8 +1046,8 @@
      1,
      0,
      0.12,
-     "#F2F5F6",
-     "#AAB8C0"
+     "#E8F1F5",
+     "#7FD1C7"
     ],
     [
      0.55,
@@ -1055,8 +1056,8 @@
      1,
      0,
      0.12,
-     "#F2F5F6",
-     "#AAB8C0"
+     "#E8F1F5",
+     "#7FD1C7"
     ],
     [
      0.3,
@@ -1065,12 +1066,13 @@
      1,
      0.24,
      0.36,
-     "#D9E1E5",
-     "#9FB0BA"
+     "#3C5566",
+     "#7FD1C7"
     ]
    ],
    "glow": "cool",
-   "veil": 0.22
+   "veil": 0.3,
+   "sky": "day"
   },
   "hospital": {
    "theme": "care",
@@ -1087,7 +1089,7 @@
    "floor": "tiles",
    "wall": "#CFE3DD",
    "side": "#B7CFC8",
-   "floorC": "#A9BDB8",
+   "floorC": "#C9B79C",
    "ceiling": "#E3EFEB",
    "win": [
     1000,
@@ -1120,6 +1122,16 @@
      0.02,
      0.1,
      "#9DB4AE"
+    ],
+    [
+     0.55,
+     0.62,
+     0.15,
+     1,
+     0.05,
+     0.12,
+     "#7FB7A8",
+     "#8CC4B5"
     ]
    ],
    "plants": [
@@ -1132,8 +1144,9 @@
     760,
     380
    ],
-   "glow": "cool",
-   "veil": 0.26
+   "glow": "warm",
+   "veil": 0.26,
+   "sky": "day"
   },
   "cafe": {
    "theme": "city",
@@ -1220,7 +1233,8 @@
     ]
    ],
    "glow": "warm",
-   "veil": 0.4
+   "veil": 0.4,
+   "night": true
   },
   "garage": {
    "theme": "industrial",
@@ -1364,7 +1378,8 @@
     ]
    ],
    "glow": "warm",
-   "veil": 0.24
+   "veil": 0.24,
+   "sky": "day"
   },
   "serverRoom": {
    "theme": "tech",
@@ -1380,10 +1395,10 @@
    ],
    "depth": 3.6,
    "floor": "tiles",
-   "wall": "#12161F",
-   "side": "#0C1017",
-   "floorC": "#1A2030",
-   "ceiling": "#0A0D14",
+   "wall": "#1F2A3D",
+   "side": "#18212F",
+   "floorC": "#2A3448",
+   "ceiling": "#141B27",
    "lamps": [
     [
      0.5,
@@ -1438,7 +1453,17 @@
     ]
    ],
    "glow": "cool",
-   "veil": 0.55
+   "veil": 0.22,
+   "pend": [
+    [
+     0.3,
+     0.4
+    ],
+    [
+     0.7,
+     0.4
+    ]
+   ]
   },
   "greenhouse": {
    "theme": "nature",
@@ -1506,7 +1531,8 @@
     ]
    ],
    "glow": "warm",
-   "veil": 0.14
+   "veil": 0.14,
+   "sky": "day"
   },
   "workshop": {
    "theme": "craft",
@@ -1526,8 +1552,8 @@
    "floorC": "#5A4634",
    "ceiling": "#3E3024",
    "win": [
-    1100,
-    1380,
+    480,
+    760,
     360,
     560
    ],
@@ -1569,7 +1595,8 @@
     ]
    ],
    "glow": "warm",
-   "veil": 0.38
+   "veil": 0.38,
+   "sky": "blinds"
   },
   "cinema": {
    "theme": "culture",
@@ -1826,7 +1853,8 @@
     ]
    ],
    "glow": "cool",
-   "veil": 0.24
+   "veil": 0.24,
+   "sky": "blinds"
   },
   "hotelLobby": {
    "theme": "city",
@@ -1902,7 +1930,8 @@
     ]
    ],
    "glow": "warm",
-   "veil": 0.35
+   "veil": 0.35,
+   "night": true
   },
   "artStudio": {
    "theme": "craft",
@@ -1917,10 +1946,10 @@
     750
    ],
    "depth": 3.3,
-   "wall": "#F1E3D3",
-   "side": "#E2D0BC",
-   "floorC": "#C9A97E",
-   "ceiling": "#FAF3EA",
+   "wall": "#C96F4A",
+   "side": "#A85A3A",
+   "floorC": "#7A5236",
+   "ceiling": "#E9C9A8",
    "win": [
     460,
     1000,
@@ -1979,7 +2008,8 @@
     ]
    ],
    "glow": "warm",
-   "veil": 0.2
+   "veil": 0.25,
+   "sky": "day"
   }
  }
 }

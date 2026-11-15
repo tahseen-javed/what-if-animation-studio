@@ -7,8 +7,8 @@ import json, os, re, subprocess, sys
 from common import FPS, ROOT, STUDIO, load, save, vdir
 import dna as dnamod
 
-VOICE = {'seed': 1234, 'exaggeration': 0.5, 'cfg_weight': 0.5, 'temperature': 0.8, 'beat_pause': 0.35, 'target_wpm': 140, 'max_pause': 0.6}
-GAPS = {'word': 0.25, 'comma': 0.6, 'sentence': 0.6, 'question': 0.6}  # owner rule: no pause longer than 0.6 s
+VOICE = {'seed': 1234, 'exaggeration': 0.5, 'cfg_weight': 0.5, 'temperature': 0.8, 'beat_pause': 0.35, 'target_wpm': 140, 'max_pause': 0.6, 'max_sentence_pause': 0.9}
+GAPS = {'word': 0.25, 'comma': 0.6, 'sentence': 0.9, 'question': 0.9}  # owner: sentence ends up to 0.9 s, commas up to 0.6 s
 
 
 def prep(vid, chapter_seconds=75.0):

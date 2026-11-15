@@ -86,7 +86,14 @@ def collapse(tokens):
     "2500"), digits stay digits ("2,500" -> "2500"). Returns the tokens and, for each, the original indices it covers."""
     out, groups, i = [], [], 0
     while i < len(tokens):
-        if isnum(tokens[i]):
+        if tokens[i].isdigit():  # "2 500" (a space as thousands separator) is one number
+            j = i + 1
+            while j < len(tokens) and len(tokens[j]) == 3 and tokens[j].isdigit():
+                j += 1
+            out.append(str(int(''.join(tokens[i:j]))))
+            groups.append(list(range(i, j)))
+            i = j
+        elif isnum(tokens[i]):
             j = i
             while j < len(tokens) and (isnum(tokens[j]) or (tokens[j] == 'and' and j + 1 < len(tokens) and isnum(tokens[j + 1]))):
                 j += 1
@@ -175,8 +182,15 @@ speech = sum(len(t[0]) for t in takes) / SR
 commas = sum(1 for t in takes for w in t[1][:-1] if re.search(r'[,;:—–]', w['p']))
 gaps = [1.0 for _ in takes[:-1]]  # even pauses: every pause point (sentence end or comma) gets the same length
 need = 60 * nwords / O['target_wpm'] - speech if O.get('target_wpm') else 0
-P = max(O['beat_pause'], min(O.get('max_pause', 1.1), need / max(1e-9, len(gaps) + commas))) if need > 0 else O['beat_pause']
-C = P if need > 0 else 0
+cs, cc = O.get('max_sentence_pause', O.get('max_pause', 1.1)), O.get('max_pause', 1.1)
+fill = lambda x: len(gaps) * min(cs, x) + commas * min(cc, x)  # one level x: commas all equal, sentence ends may go longer
+x = 0.0
+for _ in range(40) if need > 0 else []:
+    x += 0.025
+    if fill(x) >= need or x >= cs:
+        break
+P = max(O['beat_pause'], min(cs, x)) if need > 0 else O['beat_pause']
+C = min(cc, x) if need > 0 else 0
 print(f'  natural pace {60 * nwords / max(1e-9, speech):.0f} wpm in speech; sentence pause {P:.2f}s, comma pause {C:.2f}s', flush=True)
 
 audio, words, off, matched, total, unmatched, heard = [], [], 0.0, 0, 0, [], []

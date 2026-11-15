@@ -51,7 +51,7 @@ const loop = (name: string | undefined, t: number, p: Pose, seed: number): Pose 
       const h = Math.sin(Math.PI * clamp((c - 0.25) / 0.6));
       return { ...p, y: p.y - h * 90 * p.scale, squash: c < 0.22 ? 0.12 : c > 0.86 ? 0.1 : -0.08 };
     }
-    default: return { ...p, y: p.y + Math.sin(t / 18 + seed) * 1.5 * p.scale }; // breathing
+    default: return { ...p, y: p.y + Math.sin(t / 18 + seed) * 3 * p.scale, headTilt: p.headTilt + 2 * Math.sin(t / 23 + seed) }; // breathing and a slow head drift
   }
 };
 
