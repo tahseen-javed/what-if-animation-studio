@@ -24,3 +24,5 @@ CLAUDE.md
 docs/PREFERENCES.md
 docs/MASTER_SYSTEM.md
 docs/QUALITY_LOG.md
+__pycache__/
+*.pyc
