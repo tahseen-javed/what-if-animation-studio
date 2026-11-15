@@ -2,15 +2,15 @@
  {
   "slug": "test-60s-c01",
   "words": 86,
-  "frames": 1022,
-  "seconds": 34.067,
+  "frames": 1113,
+  "seconds": 37.1,
   "offset": 0.0
  },
  {
   "slug": "test-60s-c02",
   "words": 53,
-  "frames": 512,
-  "seconds": 17.067,
-  "offset": 34.067
+  "frames": 575,
+  "seconds": 19.167,
+  "offset": 37.1
  }
 ]

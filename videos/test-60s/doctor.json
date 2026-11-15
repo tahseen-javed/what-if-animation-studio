@@ -4,14 +4,14 @@
   {
    "check": "fresh_shot_data",
    "ok": true,
-   "value": "43735976347",
-   "limit": "this run (43735976347)",
+   "value": "43739049496",
+   "limit": "this run (43739049496)",
    "severity": "ok"
   },
   {
    "check": "length_s",
    "ok": true,
-   "value": 51.2,
+   "value": 56.3,
    "limit": "60s +-15%",
    "severity": "ok"
   },
@@ -38,25 +38,22 @@
   },
   {
    "check": "frozen_frames",
-   "ok": false,
-   "value": 2,
+   "ok": true,
+   "value": 0,
    "limit": 0,
-   "severity": "warn"
+   "severity": "ok"
   },
   {
    "check": "frozen_shots",
    "ok": null,
    "severity": "info",
    "limit": "",
-   "value": [
-    "C01S011 scene/tiltUp/shock at 28.6s",
-    "C02S003 scene/panLeft/lean at 41.3s"
-   ]
+   "value": []
   },
   {
    "check": "av_sync_s",
    "ok": true,
-   "value": -0.022,
+   "value": 0.029,
    "limit": "<= 0.1",
    "severity": "ok"
   },
@@ -65,8 +62,8 @@
    "ok": true,
    "value": 17,
    "limit": [
-    13,
-    17
+    14,
+    19
    ],
    "severity": "ok"
   },
@@ -74,8 +71,8 @@
    "check": "shot_len_s",
    "ok": true,
    "value": [
-    1.52,
-    4.74
+    1.6,
+    4.99
    ],
    "limit": [
     1.5,
@@ -93,7 +90,7 @@
   {
    "check": "interrupt_max_gap_s",
    "ok": true,
-   "value": 16.3,
+   "value": 16.5,
    "limit": "<= 15(+3 at the end)",
    "severity": "ok"
   },
@@ -131,7 +128,7 @@
   {
    "check": "voice_vs_script_pct",
    "ok": true,
-   "value": 97.2,
+   "value": 100.0,
    "limit": ">= 95",
    "severity": "ok"
   },
@@ -140,12 +137,7 @@
    "ok": null,
    "severity": "info",
    "limit": "",
-   "value": [
-    "two",
-    "thousand",
-    "five",
-    "hundred"
-   ]
+   "value": []
   },
   {
    "check": "whisper_heard",
@@ -156,17 +148,13 @@
     {
      "script": "neighbours",
      "heard": "neighbors"
-    },
-    {
-     "script": "2500",
-     "heard": "2 500"
     }
    ]
   },
   {
    "check": "speaking_rate_wpm",
    "ok": false,
-   "value": 168,
+   "value": 152,
    "limit": [
     125,
     150
@@ -177,8 +165,8 @@
    "check": "music_present",
    "ok": true,
    "value": [
-    0.0083,
-    0.0083
+    0.0086,
+    0.0097
    ],
    "limit": "> 0.002 rms in every chapter",
    "severity": "ok"
@@ -210,14 +198,14 @@
     {
      "id": "C01S008",
      "kind": "card",
-     "contrast": 6.26,
-     "edges": 0.028
+     "contrast": 6.57,
+     "edges": 0.025
     },
     {
      "id": "C02S005",
      "kind": "options",
-     "contrast": 5.33,
-     "edges": 0.01
+     "contrast": 5.11,
+     "edges": 0.0137
     }
    ],
    "limit": "contrast >= 3:1, edges >= 0.01 (card/option stills)",
@@ -268,5 +256,5 @@
  ],
  "fixes": [],
  "fails": 0,
- "warns": 2
+ "warns": 1
 }
