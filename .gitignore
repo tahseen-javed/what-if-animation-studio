@@ -1,0 +1,21 @@
+# Secrets — never commit API keys
+.env
+.env.*
+!.env.example
+
+# Dependencies
+node_modules/
+
+# Third-party aiTrends 2D Studio copies: no license, so not ours to republish
+2d studio/
+claude-code-studio/aitrends-2d-studio/
+
+# OS / editor clutter
+.DS_Store
+
+# Heavy/local-only (the work runs on GitHub Actions)
+tools/chatterbox/
+_archive/
+reference-projects/
+what-if-studio/out/
+.claude/settings.local.json
