@@ -1092,7 +1092,7 @@
     ]
    ],
    "glow": "warm",
-   "veil": 0.45,
+   "veil": 0.35,
    "items": [
     [
      "mezz",
@@ -3077,13 +3077,13 @@
   "asteroid": {
    "theme": "space",
    "sky": [
-    "#1E1240",
-    "#4A2F7A"
+    "#062B2E",
+    "#1F7A6E"
    ],
    "horizon": 760,
    "ground": [
-    "#7A6A92",
-    "#4E4066"
+    "#8A5A3C",
+    "#5A3A26"
    ],
    "stars": 180,
    "items": [
@@ -3091,9 +3091,9 @@
      "planet",
      500,
      280,
-     "#E07A5F",
+     "#F2CC8F",
      150,
-     "#F2CC8F"
+     "#E07A5F"
     ],
     [
      "rocks",
