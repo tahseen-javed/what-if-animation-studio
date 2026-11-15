@@ -7,6 +7,8 @@ import numpy as np
 
 from common import LIB, STUDIO, save
 
+CLIP_LIMIT = 0.106  # owner calibration 2026-11-15: between the farthest 'same' pair (0.092) and the closest 'different' pair (0.120)
+
 arg, label = sys.argv[1], sys.argv[2]
 sets = [s for s in (arg.split(',') if arg != 'all' else LIB['sets']) if LIB['sets'][s]['cast']]
 n, segs, infos, specs = len(sets), [], [], {}
@@ -45,7 +47,7 @@ d = 1 - ce @ ce.T
 pairs = sorted((float(d[i, j]), float(rd[i, j]), sets[i], sets[j]) for i in range(n) for j in range(i + 1, n))
 rep = {'sets': sets, 'metric': 'OpenCLIP ViT-B-32 laion2b_s34b_b79k cosine distance', 'min_distance': round(pairs[0][0], 3),
        'median_distance': round(float(np.median([p[0] for p in pairs])), 3), 'closest_pairs': [[round(a, 3), b, c] for a, _, b, c in pairs[:6]],
-       'threshold': None, 'ok': None, 'note': 'CLIP limit pending owner calibration (calibration.jpg)',
+       'threshold': CLIP_LIMIT, 'ok': pairs[0][0] >= CLIP_LIMIT, 'failing_pairs': [[round(a, 3), b, c] for a, _, b, c in pairs if a < CLIP_LIMIT],
        'resnet18': {'min_distance': round(min(p[1] for p in pairs), 3), 'limit': 0.15, 'ok': min(p[1] for p in pairs) >= 0.15},
        'brightness': {'floor': floor, 'dark_sets': {s: v for s, v in lum.items() if floor and v < floor}, 'per_set': lum}}
 if label == 'all':  # owner calibration: the 5 most similar and 5 clearly different pairs, one sheet

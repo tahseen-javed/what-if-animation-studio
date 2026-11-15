@@ -34,6 +34,8 @@ const Item: React.FC<{ R: Rm; it: (string | number)[]; t: number }> = ({ R, it, 
       const fl = 0.75 + 0.25 * Math.sin(t / 5);
       return <g>{B([a, b], [c, e], [0, 0.015], '#15171C')}<polygon points={poly(R, [[a + 0.01, c + 0.02, 0.016], [b - 0.01, c + 0.02, 0.016], [b - 0.01, e - 0.02, 0.016], [a + 0.01, e - 0.02, 0.016]])} fill={col} opacity={fl} /></g>;
     }
+    case 'car':
+      return <g>{B([a, b], [0.86, 0.97], [c, e], col)}{B([a + (b - a) * 0.25, b - (b - a) * 0.2], [0.78, 0.86], [c + 0.01, e - 0.01], shade(col, 0.85))}{[a + (b - a) * 0.18, b - (b - a) * 0.18].map((u, j) => { const p = R.P(u, 0.97, e); return <circle key={j} cx={p.x} cy={p.y} r={22} fill="#15171C" stroke="#8A8F98" strokeWidth={5} />; })}</g>;
     case 'column':
       return B([a - 0.025, a + 0.025], [0, 1], [b, b + 0.04], col ?? '#BFB8AA');
     case 'alcove': {

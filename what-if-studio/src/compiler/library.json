@@ -35,7 +35,6 @@
    "cast": true,
    "variants": {
     "tv": [
-     0,
      1
     ],
     "veil": [
@@ -253,6 +252,78 @@
    "ext": true
   },
   "moonBase": {
+   "theme": "space",
+   "cast": true,
+   "variants": {},
+   "ext": true
+  },
+  "jungle": {
+   "theme": "forest",
+   "cast": true,
+   "variants": {},
+   "ext": true
+  },
+  "canyon": {
+   "theme": "desert",
+   "cast": true,
+   "variants": {},
+   "ext": true
+  },
+  "farm": {
+   "theme": "country",
+   "cast": true,
+   "variants": {},
+   "ext": true
+  },
+  "harbor": {
+   "theme": "sea",
+   "cast": true,
+   "variants": {},
+   "ext": true
+  },
+  "volcano": {
+   "theme": "volcano",
+   "cast": true,
+   "variants": {},
+   "ext": true
+  },
+  "highway": {
+   "theme": "city",
+   "cast": true,
+   "variants": {},
+   "ext": true
+  },
+  "savanna": {
+   "theme": "country",
+   "cast": true,
+   "variants": {},
+   "ext": true
+  },
+  "swamp": {
+   "theme": "forest",
+   "cast": true,
+   "variants": {},
+   "ext": true
+  },
+  "island": {
+   "theme": "sea",
+   "cast": true,
+   "variants": {},
+   "ext": true
+  },
+  "nightPark": {
+   "theme": "city",
+   "cast": true,
+   "variants": {},
+   "ext": true
+  },
+  "snowVillage": {
+   "theme": "arctic",
+   "cast": true,
+   "variants": {},
+   "ext": true
+  },
+  "asteroid": {
    "theme": "space",
    "cast": true,
    "variants": {},
@@ -1290,9 +1361,9 @@
    ],
    "depth": 3.1,
    "floor": "tiles",
-   "wall": "#5A5F63",
-   "side": "#474B4E",
-   "floorC": "#3E4144",
+   "wall": "#8C9196",
+   "side": "#767B80",
+   "floorC": "#5E6266",
    "ceiling": "#2C2F31",
    "pend": [
     [
@@ -1346,17 +1417,25 @@
     ]
    ],
    "glow": "warm",
-   "veil": 0.5,
+   "veil": 0.3,
    "items": [
     [
+     "car",
+     0.3,
+     0.7,
+     0.3,
+     0.45,
+     "#C0392B"
+    ],
+    [
      "column",
-     0.33,
+     0.15,
      0.2,
      "#6A6F73"
     ],
     [
      "column",
-     0.67,
+     0.85,
      0.2,
      "#6A6F73"
     ]
@@ -1677,9 +1756,9 @@
    ],
    "depth": 3.0,
    "floor": "tiles",
-   "wall": "#3A0E16",
-   "side": "#2A0A10",
-   "floorC": "#1C0A0E",
+   "wall": "#5A1A26",
+   "side": "#46141E",
+   "floorC": "#2E1218",
    "ceiling": "#120607",
    "boxes": [
     [
@@ -1694,7 +1773,7 @@
     ]
    ],
    "glow": "cool",
-   "veil": 0.6,
+   "veil": 0.35,
    "items": [
     [
      "sofa",
@@ -1711,6 +1790,28 @@
      0.24,
      0.32,
      "#7A1020"
+    ]
+   ],
+   "lamps": [
+    [
+     0.08,
+     0.3,
+     0.2
+    ],
+    [
+     0.92,
+     0.3,
+     0.2
+    ],
+    [
+     0.08,
+     0.6,
+     0.35
+    ],
+    [
+     0.92,
+     0.6,
+     0.35
     ]
    ]
   },
@@ -2197,10 +2298,30 @@
    "items": [
     [
      "cacti",
-     860,
-     4,
+     760,
+     5,
+     "#5C8F45",
+     5,
+     null,
+     1.2
+    ],
+    [
+     "rocks",
+     1000,
+     3,
+     "#B07A45",
+     6,
+     null,
+     1.6
+    ],
+    [
+     "cacti",
+     1020,
+     2,
      "#4E7F3A",
-     5
+     9,
+     null,
+     2.6
     ]
    ],
    "haze": "#FFE0B0"
@@ -2360,18 +2481,38 @@
      13,
      "#2A2238"
     ]
+   ],
+   "items": [
+    [
+     "trees",
+     860,
+     6,
+     "#1E2A22",
+     4,
+     null,
+     1.2
+    ],
+    [
+     "rocks",
+     1040,
+     3,
+     "#2A2230",
+     8,
+     null,
+     2.2
+    ]
    ]
   },
   "cityStreet": {
    "theme": "city",
    "sky": [
-    "#0B1026",
-    "#2B2F5A"
+    "#1A2050",
+    "#3B3F7A"
    ],
    "horizon": 700,
    "ground": [
-    "#2B2B33",
-    "#1B1B22"
+    "#3A3A46",
+    "#26262E"
    ],
    "stars": 60,
    "items": [
@@ -2379,16 +2520,27 @@
      "buildings",
      700,
      6,
-     "#1E2236",
+     "#2A2F4A",
      3,
      "#FFD27A"
     ],
     [
+     "neon",
+     560,
+     3,
+     "#FF4FA3",
+     4,
+     "#2FE0FF",
+     1.2
+    ],
+    [
      "lamps",
-     900,
+     920,
      4,
      "#FFD27A",
-     2
+     2,
+     "#9AA3B2",
+     1.2
     ]
    ]
   },
@@ -2420,11 +2572,12 @@
     ],
     [
      "stalls",
-     860,
-     4,
+     900,
+     3,
      "#C0392B",
      1,
-     "#FFF3E0"
+     "#FFF3E0",
+     1.6
     ]
    ]
   },
@@ -2459,10 +2612,497 @@
     ],
     [
      "rocks",
-     900,
-     5,
+     980,
+     4,
      "#4A4A4A",
-     9
+     9,
+     null,
+     1.8
+    ]
+   ]
+  },
+  "jungle": {
+   "theme": "forest",
+   "sky": [
+    "#6FBF73",
+    "#DDF2C8"
+   ],
+   "horizon": 600,
+   "ground": [
+    "#3F6B2A",
+    "#24401A"
+   ],
+   "ridges": [
+    [
+     600,
+     180,
+     21,
+     "#3E7A3A"
+    ]
+   ],
+   "items": [
+    [
+     "palms",
+     760,
+     5,
+     "#2E7D32",
+     3,
+     null,
+     1.1
+    ],
+    [
+     "palms",
+     1060,
+     2,
+     "#1B5E20",
+     8,
+     null,
+     1.8
+    ]
+   ],
+   "haze": "#E8FFD8"
+  },
+  "canyon": {
+   "theme": "desert",
+   "sky": [
+    "#F7A35C",
+    "#FDE1C2"
+   ],
+   "horizon": 700,
+   "ground": [
+    "#B5562E",
+    "#7A3418"
+   ],
+   "sun": [
+    1500,
+    260,
+    70,
+    "#FFF0C8"
+   ],
+   "ridges": [
+    [
+     700,
+     380,
+     17,
+     "#C2603A"
+    ],
+    [
+     710,
+     230,
+     23,
+     "#9E4526"
+    ]
+   ],
+   "items": [
+    [
+     "rocks",
+     1000,
+     3,
+     "#8A3B1E",
+     2,
+     null,
+     2.0
+    ]
+   ]
+  },
+  "farm": {
+   "theme": "country",
+   "sky": [
+    "#8EC5FC",
+    "#E0F0FF"
+   ],
+   "horizon": 640,
+   "ground": [
+    "#C9B458",
+    "#8FA03A"
+   ],
+   "sun": [
+    300,
+    220,
+    60,
+    "#FFF8DC"
+   ],
+   "ridges": [
+    [
+     640,
+     70,
+     31,
+     "#7FA35A"
+    ]
+   ],
+   "items": [
+    [
+     "fence",
+     860,
+     0,
+     "#8B5A2B",
+     0,
+     null,
+     1.2
+    ],
+    [
+     "trees",
+     700,
+     3,
+     "#3E7B3A",
+     6,
+     null,
+     1.0
+    ]
+   ]
+  },
+  "harbor": {
+   "theme": "sea",
+   "sky": [
+    "#F4B183",
+    "#FBE3D0"
+   ],
+   "horizon": 600,
+   "ground": [
+    "#2C6E8F",
+    "#173F55"
+   ],
+   "sun": [
+    1300,
+    520,
+    80,
+    "#FFE0B0"
+   ],
+   "items": [
+    [
+     "buildings",
+     600,
+     4,
+     "#6B5B6E",
+     12,
+     "#FFD27A",
+     0.6
+    ],
+    [
+     "waves",
+     640,
+     0,
+     "#FFFFFF",
+     0
+    ],
+    [
+     "boats",
+     860,
+     3,
+     "#C0392B",
+     4,
+     "#FFF8E7",
+     1.4
+    ]
+   ]
+  },
+  "volcano": {
+   "theme": "volcano",
+   "sky": [
+    "#2B0F0E",
+    "#7A2E1E"
+   ],
+   "horizon": 720,
+   "ground": [
+    "#3A2422",
+    "#1E1210"
+   ],
+   "ridges": [
+    [
+     720,
+     480,
+     41,
+     "#2A1614"
+    ]
+   ],
+   "items": [
+    [
+     "lava",
+     960,
+     260,
+     "#FF5A1F",
+     0
+    ],
+    [
+     "rocks",
+     1000,
+     4,
+     "#1A0E0C",
+     7,
+     null,
+     1.8
+    ]
+   ],
+   "haze": "#FF7A3A"
+  },
+  "highway": {
+   "theme": "city",
+   "sky": [
+    "#5B7DB1",
+    "#F2C59B"
+   ],
+   "horizon": 640,
+   "ground": [
+    "#6E7B5A",
+    "#46523A"
+   ],
+   "sun": [
+    960,
+    600,
+    70,
+    "#FFE8B8"
+   ],
+   "ridges": [
+    [
+     640,
+     90,
+     51,
+     "#5E6F7A"
+    ]
+   ],
+   "items": [
+    [
+     "road",
+     640,
+     0,
+     "#3C3F45",
+     0,
+     "#F2E3A0"
+    ],
+    [
+     "lamps",
+     860,
+     2,
+     "#FFE6A6",
+     3,
+     "#9AA3B2",
+     1.3
+    ]
+   ]
+  },
+  "savanna": {
+   "theme": "country",
+   "sky": [
+    "#F9C784",
+    "#FFF1D6"
+   ],
+   "horizon": 680,
+   "ground": [
+    "#D4A84B",
+    "#9C7A2E"
+   ],
+   "sun": [
+    1450,
+    420,
+    100,
+    "#FFE6B0"
+   ],
+   "items": [
+    [
+     "trees",
+     700,
+     3,
+     "#5A6B2E",
+     13,
+     null,
+     1.4
+    ],
+    [
+     "rocks",
+     1010,
+     2,
+     "#8C6A3A",
+     5,
+     null,
+     1.5
+    ]
+   ]
+  },
+  "swamp": {
+   "theme": "forest",
+   "sky": [
+    "#4A5D4F",
+    "#9FB3A0"
+   ],
+   "horizon": 650,
+   "ground": [
+    "#3D4F3A",
+    "#26332A"
+   ],
+   "ridges": [
+    [
+     650,
+     120,
+     61,
+     "#34463A"
+    ]
+   ],
+   "items": [
+    [
+     "trees",
+     720,
+     7,
+     "#22362A",
+     15,
+     null,
+     1.3
+    ],
+    [
+     "waves",
+     900,
+     0,
+     "#9FB3A0",
+     0
+    ]
+   ],
+   "haze": "#C8D8C8"
+  },
+  "island": {
+   "theme": "sea",
+   "sky": [
+    "#56CCF2",
+    "#E0F7FF"
+   ],
+   "horizon": 620,
+   "ground": [
+    "#1E90B4",
+    "#0E5C7A"
+   ],
+   "sun": [
+    1500,
+    230,
+    70,
+    "#FFFBE0"
+   ],
+   "items": [
+    [
+     "rocks",
+     800,
+     1,
+     "#E9D7A5",
+     2,
+     null,
+     4.5
+    ],
+    [
+     "palms",
+     790,
+     2,
+     "#2E7D32",
+     7,
+     null,
+     1.4
+    ]
+   ]
+  },
+  "nightPark": {
+   "theme": "city",
+   "sky": [
+    "#141A3A",
+    "#33406E"
+   ],
+   "horizon": 680,
+   "ground": [
+    "#2F4A34",
+    "#1C2E20"
+   ],
+   "stars": 40,
+   "sun": [
+    1500,
+    200,
+    50,
+    "#F4F1DE"
+   ],
+   "items": [
+    [
+     "trees",
+     720,
+     6,
+     "#1C3A26",
+     19,
+     null,
+     1.3
+    ],
+    [
+     "lamps",
+     940,
+     3,
+     "#FFE6A6",
+     4,
+     "#B0B8C4",
+     1.3
+    ]
+   ]
+  },
+  "snowVillage": {
+   "theme": "arctic",
+   "sky": [
+    "#A7C7E7",
+    "#EEF5FB"
+   ],
+   "horizon": 640,
+   "ground": [
+    "#FFFFFF",
+    "#DCE7F0"
+   ],
+   "ridges": [
+    [
+     640,
+     150,
+     71,
+     "#CFE0EE"
+    ]
+   ],
+   "items": [
+    [
+     "buildings",
+     700,
+     4,
+     "#8C5A3C",
+     23,
+     "#FFD27A",
+     0.5
+    ],
+    [
+     "trees",
+     900,
+     4,
+     "#2F5D46",
+     29,
+     null,
+     1.4
+    ]
+   ]
+  },
+  "asteroid": {
+   "theme": "space",
+   "sky": [
+    "#05010F",
+    "#1A0B33"
+   ],
+   "horizon": 760,
+   "ground": [
+    "#5A4A6E",
+    "#2E2440"
+   ],
+   "stars": 180,
+   "items": [
+    [
+     "planet",
+     500,
+     280,
+     "#E07A5F",
+     150,
+     "#F2CC8F"
+    ],
+    [
+     "rocks",
+     980,
+     5,
+     "#3B2F4F",
+     3,
+     null,
+     2.0
     ]
    ]
   }
