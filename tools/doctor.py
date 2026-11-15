@@ -44,7 +44,7 @@ def ui_frames(vid, shots):
 def detect(path):
     r = subprocess.run(['ffmpeg', '-hide_banner', '-nostats', '-i', str(path), '-vf', 'blackdetect=d=0.4:pix_th=0.08,freezedetect=n=0.002:d=3', '-an', '-f', 'null', '-'],
                        capture_output=True, text=True, errors='ignore')
-    return len(re.findall(r'black_start', r.stderr)), len(re.findall(r'freeze_start', r.stderr))
+    return len(re.findall(r'black_start', r.stderr)), [float(x) for x in re.findall(r'freeze_start: ([\d.]+)', r.stderr)]
 
 
 def streams(path):
@@ -73,7 +73,9 @@ def check(vid):
     add('true_peak_dbtp', tp <= -1.5, tp, '<= -1.5')
     blacks, freezes = detect(final)
     add('black_frames', blacks == 0, blacks, 0)
-    add('frozen_frames', freezes == 0, freezes, 0, 'warn')
+    add('frozen_frames', not freezes, len(freezes), 0, 'warn')
+    res.append({'check': 'frozen_shots', 'ok': None, 'severity': 'info', 'limit': '',
+                'value': [f"{s['id']} {s['kind']}/{s['cam']}/{s['pose']} at {t:.1f}s" for t in freezes for s in sl['shots'] if s['g0'] <= t < s['g1']]})
     v, a = streams(final)
     add('av_sync_s', abs(v - a) <= 0.1, round(v - a, 3), '<= 0.1')
     lens = [s['g1'] - s['g0'] for s in shots]
@@ -102,6 +104,7 @@ def check(vid):
     matched, total = sum(s.get('matched', 0) for s in stats), sum(s.get('total', 0) for s in stats)
     add('voice_vs_script_pct', total and matched / total >= 0.95, round(100 * matched / max(1, total), 1), '>= 95')
     res.append({'check': 'unmatched_words', 'ok': None, 'severity': 'info', 'limit': '', 'value': [w for s in stats for w in s.get('unmatched', [])][:30]})
+    res.append({'check': 'whisper_heard', 'ok': None, 'severity': 'info', 'limit': '', 'value': [h for s in stats for h in s.get('heard', [])][:12]})
     speech = sum(duration(STUDIO / 'public' / c['slug'] / 'voice.wav') for c in chs)
     wpm = 60 * total / max(1, speech)
     add('speaking_rate_wpm', B['wpm'][0] <= wpm <= B['wpm'][1], round(wpm), B['wpm'], 'warn')

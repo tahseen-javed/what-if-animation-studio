@@ -116,7 +116,10 @@ def align(x, text):
     st, en = [None] * len(S), [None] * len(S)
     A, ga = collapse([norm(t['w']) for t in S])
     Bw, gb = collapse([w[0] for w in W])
+    heard = []
     for tag, i1, i2, j1, j2 in difflib.SequenceMatcher(None, A, Bw, autojunk=False).get_opcodes():
+        if tag != 'equal' and i2 > i1:
+            heard.append({'script': ' '.join(A[i1:i2]), 'heard': ' '.join(Bw[j1:j2])})  # what whisper wrote instead
         if tag == 'equal' or (tag == 'replace' and i2 - i1 == j2 - j1):  # spelling variants count (neighbours/neighbors)
             for k in range(i2 - i1):
                 if tag == 'equal' or difflib.SequenceMatcher(None, A[i1 + k], Bw[j1 + k]).ratio() >= 0.75:
@@ -141,7 +144,7 @@ def align(x, text):
             i = j
         else:
             i += 1
-    return S, st, en, miss
+    return S, st, en, miss, heard
 
 
 def fade(x, n=int(0.005 * SR)):
@@ -158,9 +161,9 @@ for text in job['beats']:
     best = None
     for take in range(3):
         x = synth(text, take)
-        S, st, en, miss = align(x, text)
+        S, st, en, miss, hr = align(x, text)
         if best is None or len(miss) < len(best[4]):
-            best = (x, S, st, en, miss)
+            best = (x, S, st, en, miss, hr)
         if len(miss) <= 0.03 * len(S) or take == 2:
             break
         retakes += 1
@@ -176,8 +179,9 @@ P = max(O['beat_pause'], min(O.get('max_pause', 1.1), need / max(1e-9, len(gaps)
 C = P if need > 0 else 0
 print(f'  natural pace {60 * nwords / max(1e-9, speech):.0f} wpm in speech; sentence pause {P:.2f}s, comma pause {C:.2f}s', flush=True)
 
-audio, words, off, matched, total, unmatched = [], [], 0.0, 0, 0, []
-for b, (x, S, st, en, miss) in enumerate(takes):
+audio, words, off, matched, total, unmatched, heard = [], [], 0.0, 0, 0, [], []
+for b, (x, S, st, en, miss, hr) in enumerate(takes):
+    heard += hr
     parts, last, st, en = [], 0.0, list(st), list(en)
     for i in range(len(S) - 1):
         if C and re.search(r'[,;:—–]', S[i]['p']):
@@ -199,6 +203,6 @@ for b, (x, S, st, en, miss) in enumerate(takes):
 y = np.concatenate(audio)
 sf.write(job['out_wav'], y / max(1e-9, np.abs(y).max()) * 0.92, SR, subtype='PCM_16')
 json.dump(words, open(job['out_words'], 'w', encoding='utf-8'), indent=1, ensure_ascii=False)
-json.dump({'matched': matched, 'total': total, 'seconds': round(len(y) / SR, 2), 'unmatched': unmatched[:40], 'retakes': retakes},
+json.dump({'matched': matched, 'total': total, 'seconds': round(len(y) / SR, 2), 'unmatched': unmatched[:40], 'heard': heard[:20], 'retakes': retakes},
           open(job['out_words'].replace('.json', '.stats.json'), 'w', encoding='utf-8'), ensure_ascii=False)
 print(f'Chatterbox voice: {len(y) / SR:.1f}s, {total} words, {matched} matched by whisper ({100 * matched // max(1, total)}%), {retakes} retakes; unmatched: {unmatched[:12]}')

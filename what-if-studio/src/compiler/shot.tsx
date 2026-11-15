@@ -201,7 +201,7 @@ const Overlay: React.FC<{ name?: string; t: number; uid: string }> = ({ name, t,
 // DNA-driven UI: uiSkin colours panels and option cards, titleLook styles cards, optionCard lays out a decision.
 const SKIN: Record<string, { bg: string; o: number; fg: string; acc: string; font: string; r: number }> = {
   pill: { bg: '#14121F', o: 0.78, fg: '#F6EFE3', acc: '#FFB347', font: FONT.ui, r: 40 },
-  glass: { bg: '#FFFFFF', o: 0.16, fg: '#FFFFFF', acc: '#9FE7FF', font: FONT.ui, r: 26 },
+  glass: { bg: '#0E0C1E', o: 0.62, fg: '#FFFFFF', acc: '#9FE7FF', font: FONT.ui, r: 26 }, // dark tinted glass: white text needs a dark backing
   chalk: { bg: '#1F3A2E', o: 0.94, fg: '#EDEDE0', acc: '#F7D774', font: FONT.hand, r: 8 },
   terminal: { bg: '#050A05', o: 0.92, fg: '#39FF7A', acc: '#B6FFCB', font: FONT.ui, r: 4 },
   paper: { bg: '#F3E7CF', o: 0.96, fg: '#2A2118', acc: '#C2410C', font: FONT.hand, r: 10 },

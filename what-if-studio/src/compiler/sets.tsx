@@ -3,6 +3,8 @@ import {
   Study, STUDY, Kitchen, KITCHEN, KitchenIsland, Lounge, LOUNGE, Bedroom, BEDROOM, Classroom, Rooftop, Stairwell,
   hipGround, Apartments, Schematic, stand, Room,
 } from '../engine';
+import LIB from './library.json';
+import { ProcSet, procMarks, ProcDef } from './proc';
 
 // Set adapters: how the compiler draws each library set and where characters can stand on it (marks: hip point and
 // scale). A new set = one entry here + one entry in library.json (theme, variants). Front is drawn after the cast.
@@ -35,3 +37,8 @@ export const SETS: Record<string, SetDef> = {
   apartments: { Back: ({ t, v, id }) => <Apartments t={t} id={id} seed={n(v.seed, 9)} others={n(v.others, 0.3)} />, marks: [] },
   schematic: { Back: ({ t, id }) => <Schematic t={t} id={id} />, marks: [] },
 };
+
+// Procedural interiors from library.json "proc" (proc.tsx): data only.
+for (const [k, d] of Object.entries((LIB as unknown as { proc?: Record<string, ProcDef> }).proc ?? {})) {
+  SETS[k] = { Back: ({ t, id }) => <ProcSet d={d} t={t} id={id} />, marks: procMarks(d) };
+}
