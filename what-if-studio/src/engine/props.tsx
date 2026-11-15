@@ -460,3 +460,93 @@ export const PaperBall: React.FC<{ x: number; y: number; r?: number; rot?: numbe
     <path d={`M ${-r * 0.85} ${-r * 0.2} L ${-r * 0.62} ${-r * 0.7}`} stroke="#FFE7B8" strokeWidth={r * 0.07} strokeLinecap="round" opacity={0.7} />
   </g>
 );
+
+// ---------- for the lights-out run: a guitar, a game pad, an amp, a wall switch, a nightlight, a jellyfish ----------
+/** An electric guitar, body at (x, y), the neck running along +x before `rot`. */
+export const Guitar: React.FC<{ x: number; y: number; s?: number; rot?: number; ping?: number }> = ({ x, y, s = 1, rot = 0, ping = 0 }) => (
+  <g transform={`translate(${x} ${y}) rotate(${rot}) scale(${s})`}>
+    <rect x={40} y={-11} width={250} height={22} fill="#5A3A26" stroke="#141019" strokeWidth={3} />
+    {[80, 120, 160, 200, 240].map((fx) => <path key={fx} d={`M ${fx} -11 L ${fx} 11`} stroke="#C9B58A" strokeWidth={2} />)}
+    <path d="M 288 -16 L 348 -24 Q 358 0 348 24 L 288 16 Z" fill="#2A1C18" stroke="#141019" strokeWidth={3} />
+    {[-14, 0, 14].map((k) => <circle key={k} cx={322} cy={k} r={5} fill="#D9C8A8" />)}
+    <path d="M -96 -40 Q -112 -74 -66 -80 Q -26 -82 -4 -50 Q 14 -30 56 -22 L 56 22 Q 14 30 -4 50 Q -26 82 -66 80 Q -112 74 -96 40 Q -84 0 -96 -40 Z" fill="#B5472F" stroke="#141019" strokeWidth={4} strokeLinejoin="round" />
+    <path d="M -74 -62 Q -40 -66 -18 -38 Q 0 -18 30 -14 L 30 14 Q 0 18 -18 38 Q -40 66 -74 62 Q -86 0 -74 -62 Z" fill="#E08A3D" opacity={0.75} />
+    <path d="M -50 -40 Q -10 -34 18 -14 L 18 14 Q -10 34 -50 40 Z" fill="#1E1824" />
+    <rect x={-44} y={-20} width={12} height={40} fill="#D9C8A8" />
+    <rect x={-14} y={-20} width={10} height={40} fill="#D9C8A8" />
+    {[-7, -2.5, 2.5, 7].map((k, i) => <path key={k} d={`M -52 ${k} L 330 ${k * 0.6}`} stroke="#F0E6CF" strokeWidth={1.4} opacity={0.85} transform={i === 1 && ping > 0 ? `translate(0 ${Math.sin(ping * 2.4) * 3})` : undefined} />)}
+  </g>
+);
+
+/** A game pad seen from behind the hands: a rounded body, grips, a d-pad, four buttons. */
+export const GamePad: React.FC<{ x: number; y: number; s?: number; rot?: number }> = ({ x, y, s = 1, rot = 0 }) => (
+  <g transform={`translate(${x} ${y}) rotate(${rot}) scale(${s})`}>
+    <path d="M -70 -28 Q 0 -40 70 -28 Q 96 -22 104 22 Q 110 58 84 56 Q 66 54 50 20 L -50 20 Q -66 54 -84 56 Q -110 58 -104 22 Q -96 -22 -70 -28 Z" fill="#1C1E2C" stroke="#0C0D15" strokeWidth={4} />
+    <path d="M -58 -6 h 10 v -10 h 10 v 10 h 10 v 10 h -10 v 10 h -10 v -10 h -10 Z" fill="#3A3E54" />
+    {[[46, -10, '#E0564A'], [62, -2, '#E9C46A'], [46, 6, '#4FB08A'], [30, -2, '#5A8CE0']].map(([bx, by, c], i) => <circle key={i} cx={bx as number} cy={by as number} r={6} fill={c as string} />)}
+    <path d="M -70 -28 Q 0 -40 70 -28" stroke="#6FA8FF" strokeWidth={2.5} fill="none" opacity={0.8} />
+  </g>
+);
+
+/** A small practice amp, feet at (x, y). `led` lights the power light, and it glows when the guitar's playing. */
+export const Amp: React.FC<{ x: number; y: number; s?: number; led?: number }> = ({ x, y, s = 1, led = 1 }) => (
+  <g transform={`translate(${x} ${y}) scale(${s})`}>
+    <ellipse cx={4} cy={2} rx={94} ry={12} fill="#000" opacity={0.4} />
+    <rect x={-84} y={-132} width={168} height={132} rx={8} fill="#1E1A22" stroke="#0E0C12" strokeWidth={4} />
+    <rect x={-72} y={-98} width={144} height={90} rx={4} fill="#3A2E2A" />
+    {Array.from({ length: 8 }).map((_, i) => <path key={i} d={`M -72 ${-90 + i * 11} L 72 ${-90 + i * 11}`} stroke="#2A201E" strokeWidth={3} />)}
+    {[-50, -24, 2].map((k) => <circle key={k} cx={k} cy={-116} r={7} fill="#C9B58A" />)}
+    <circle cx={60} cy={-116} r={5} fill="#FF4A4A" opacity={led} />
+    <path d="M -84 -132 L 84 -132" stroke="#A9C6FF" strokeWidth={2.5} opacity={0.6} />
+  </g>
+);
+
+/** A wall switch plate, (x, y) its centre. `off` 0..1 moves the rocker. */
+export const WallSwitch: React.FC<{ x: number; y: number; s?: number; off?: number; lit?: number }> = ({ x, y, s = 1, off = 0, lit = 1 }) => (
+  <g transform={`translate(${x} ${y}) scale(${s})`}>
+    <rect x={-96} y={-146} width={204} height={304} rx={16} fill="#000" opacity={0.35} />
+    <rect x={-104} y={-154} width={208} height={308} rx={16} fill="#E8DFCC" stroke="#8E8268" strokeWidth={4} />
+    <circle cx={0} cy={-128} r={8} fill="#B8AE98" />
+    <circle cx={0} cy={128} r={8} fill="#B8AE98" />
+    <path d="M -5 -128 L 5 -128 M 0 123 L 0 133" stroke="#6E6450" strokeWidth={2.5} />
+    <rect x={-58} y={-94} width={116} height={188} rx={8} fill="#BEB39B" />
+    <rect x={-46} y={-82} width={92} height={164} rx={6} fill={off > 0.5 ? '#CFC5AF' : '#F4EDDC'} transform={`skewY(0)`} />
+    <rect x={-46} y={off > 0.5 ? 0 : -82} width={92} height={82} rx={6} fill={off > 0.5 ? '#EFE7D6' : '#D6CCB6'} />
+    <rect x={-104} y={-154} width={208} height={308} rx={16} fill="#04060F" opacity={0.72 * (1 - lit)} />
+  </g>
+);
+
+/** A crescent-moon nightlight on a small foot. `on` 0..1. */
+export const Nightlight: React.FC<{ x: number; y: number; s?: number; on?: number }> = ({ x, y, s = 1, on = 1 }) => (
+  <g transform={`translate(${x} ${y}) scale(${s})`}>
+    <ellipse cx={0} cy={0} rx={46} ry={9} fill="#2A2026" />
+    <rect x={-5} y={-30} width={10} height={30} fill="#2A2026" />
+    <path d="M 26 -112 A 50 50 0 1 0 26 -30 A 38 38 0 1 1 26 -112 Z" fill={on > 0.5 ? '#FFE0A8' : '#5A5468'} stroke="#2A2026" strokeWidth={3} />
+  </g>
+);
+
+/** A jellyfish: the bell at (x, y) of radius r, pulsing on `pulse` (0..1 contracted), trailing arms from t. */
+export const Jellyfish: React.FC<{ x: number; y: number; r?: number; t: number; pulse?: number; o?: number }> = ({ x, y, r = 220, t, pulse = 0, o = 1 }) => {
+  const w = r * (1 - 0.16 * pulse);
+  const h = r * (0.82 + 0.16 * pulse);
+  const rimY = y + h * 0.36;
+  const arms = Array.from({ length: 9 }).map((_, i) => {
+    const k = i / 8 - 0.5;
+    const x0 = x + k * w * 1.65;
+    const len = r * (1.25 + 0.5 * Math.sin(i * 1.7));
+    const pts = Array.from({ length: 7 }).map((__, j) => {
+      const q = (j + 1) / 7;
+      return `${x0 + k * 46 * q + Math.sin(t / 15 + i + q * 4.2) * 34 * q} ${rimY + len * q}`;
+    });
+    return `M ${x0} ${rimY} L ${pts.join(' L ')}`;
+  });
+  return (
+    <g opacity={o}>
+      <circle cx={x} cy={y} r={r * 2.3} fill="url(#g3cool)" opacity={0.3} style={{ mixBlendMode: 'screen' }} />
+      {arms.map((d, i) => <path key={i} d={d} stroke={i % 2 ? '#F2A6D8' : '#8FE3F2'} strokeWidth={i % 3 ? 7 : 12} fill="none" strokeLinecap="round" strokeLinejoin="round" opacity={0.6} />)}
+      <path d={`M ${x - w} ${rimY} Q ${x - w * 1.04} ${y - h} ${x} ${y - h} Q ${x + w * 1.04} ${y - h} ${x + w} ${rimY} Q ${x + w * 0.74} ${rimY + 22} ${x + w * 0.5} ${rimY + 4} Q ${x + w * 0.25} ${rimY + 26} ${x} ${rimY + 6} Q ${x - w * 0.25} ${rimY + 26} ${x - w * 0.5} ${rimY + 4} Q ${x - w * 0.74} ${rimY + 22} ${x - w} ${rimY} Z`} fill="#8FD8EC" opacity={0.42} stroke="#D6F6FF" strokeWidth={4} />
+      <path d={`M ${x - w * 0.62} ${y - h * 0.1} Q ${x - w * 0.5} ${y - h * 0.82} ${x} ${y - h * 0.84}`} stroke="#FFFFFF" strokeWidth={10} fill="none" strokeLinecap="round" opacity={0.5} />
+      {[-0.42, -0.14, 0.14, 0.42].map((k) => <ellipse key={k} cx={x + k * w} cy={rimY - h * 0.16} rx={r * 0.11} ry={r * 0.07} fill="#F2A6D8" opacity={0.65} />)}
+    </g>
+  );
+};

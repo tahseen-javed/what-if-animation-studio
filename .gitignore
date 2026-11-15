@@ -19,3 +19,8 @@ _archive/
 reference-projects/
 what-if-studio/out/
 .claude/settings.local.json
+# Private owner docs (repo is public; decision pending)
+CLAUDE.md
+docs/PREFERENCES.md
+docs/MASTER_SYSTEM.md
+docs/QUALITY_LOG.md

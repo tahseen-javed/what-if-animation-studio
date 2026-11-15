@@ -4,6 +4,7 @@ import './engine/fonts';
 import { STUDIO } from './studio.config';
 import { EPISODES } from './episodes';
 import { CastSheet } from './CastSheet';
+import { PlanFilm, PlanBoard, DEMO } from './compiler/PlanFilm';
 
 // Every episode gets two compositions: <Id> (the film) and <Id>Board (one frame per shot, at its key frame, for the
 // storyboard). Cast renders the cast sheet.
@@ -20,6 +21,8 @@ export const Root: React.FC = () => {
         </React.Fragment>
       ))}
       <Composition id="Cast" component={CastSheet} durationInFrames={1} {...common} />
+      <Composition id="PlanFilm" component={PlanFilm} defaultProps={DEMO} durationInFrames={60} calculateMetadata={({ props }) => ({ durationInFrames: Math.max(1, props.plan.timeline.total) })} {...common} />
+      <Composition id="PlanBoard" component={PlanBoard} defaultProps={DEMO} durationInFrames={1} calculateMetadata={({ props }) => ({ durationInFrames: Math.max(1, props.plan.timeline.shots.length) })} {...common} />
     </>
   );
 };

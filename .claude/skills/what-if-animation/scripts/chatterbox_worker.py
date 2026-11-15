@@ -97,4 +97,5 @@ for text in job['beats']:
 y = np.concatenate(audio)
 sf.write(job['out_wav'], y / max(1e-9, np.abs(y).max()) * 0.92, SR, subtype='PCM_16')
 json.dump(words, open(job['out_words'], 'w', encoding='utf-8'), indent=1, ensure_ascii=False)
+json.dump({'matched': matched, 'total': total, 'seconds': round(len(y) / SR, 2)}, open(job['out_words'].replace('.json', '.stats.json'), 'w'))
 print(f'Chatterbox voice: {len(y) / SR:.1f}s, {total} words, {matched} matched by whisper ({100 * matched // max(1, total)}%)')

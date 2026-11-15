@@ -1,0 +1,133 @@
+name: long-form
+# Script in, mastered 16:9 video out: prep (chapters + DNA) -> voice per chapter (parallel) -> director (one plan for
+# all chapters) -> render per chapter (parallel) -> join, master, Video Doctor, metadata committed back.
+on:
+  workflow_dispatch:
+    inputs:
+      video:
+        description: "Folder in videos/ holding script.txt (and video.json)"
+        required: true
+        default: test-60s
+      chapter_seconds:
+        description: "Target chapter length in seconds (60-90; smaller only for tests)"
+        default: "75"
+concurrency:
+  group: factory
+  cancel-in-progress: false
+permissions:
+  contents: write
+env:
+  VIDEO: ${{ inputs.video }}
+  SKILL: ${{ github.workspace }}/.claude/skills/what-if-animation
+jobs:
+  prep:
+    runs-on: ubuntu-24.04
+    outputs:
+      chapters: ${{ steps.p.outputs.chapters }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - run: pip install -q numpy
+      - id: p
+        run: python tools/longform.py prep "$VIDEO" --chapter-seconds "${{ inputs.chapter_seconds }}"
+      - run: tar czf prep.tgz videos/"$VIDEO" dna/"$VIDEO".json what-if-studio/src/episodes/"$VIDEO"-c*
+      - uses: actions/upload-artifact@v4
+        with: { name: prep, path: prep.tgz, retention-days: 7 }
+
+  voice:
+    needs: prep
+    runs-on: ubuntu-24.04
+    timeout-minutes: 340
+    strategy:
+      fail-fast: false
+      matrix:
+        slug: ${{ fromJSON(needs.prep.outputs.chapters) }}
+    env:
+      SLUG: ${{ matrix.slug }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - uses: actions/download-artifact@v4
+        with: { name: prep }
+      - run: tar xzf prep.tgz && sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+      - name: Chatterbox (CPU)
+        run: |
+          pip install -q torch==2.6.0 torchaudio==2.6.0 --index-url https://download.pytorch.org/whl/cpu
+          pip install -q "setuptools<81" numpy pillow soundfile chatterbox-tts faster-whisper
+      - uses: actions/cache@v4
+        with: { path: "~/.cache/huggingface", key: hf-chatterbox-v1 }
+      - name: Voice
+        working-directory: what-if-studio
+        run: python "$SKILL/scripts/voice.py" "$SLUG"
+      - run: tar czf "voice-$SLUG.tgz" "what-if-studio/public/$SLUG" "what-if-studio/src/episodes/$SLUG" "what-if-studio/out/$SLUG/words_raw.stats.json"
+      - uses: actions/upload-artifact@v4
+        with: { name: "voice-${{ matrix.slug }}", path: "voice-${{ matrix.slug }}.tgz", retention-days: 7 }
+
+  plan:
+    needs: [prep, voice]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - uses: actions/download-artifact@v4
+        with: { pattern: "{prep,voice-*}", merge-multiple: true, path: dl }
+      - run: for f in dl/*.tgz; do tar xzf "$f"; done && sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg && pip install -q numpy
+      - run: python tools/director.py "$VIDEO"
+      - run: tar czf plans.tgz videos/"$VIDEO" what-if-studio/out/"$VIDEO"-c*/plan.json what-if-studio/public/"$VIDEO"-c*/music.wav what-if-studio/public/"$VIDEO"-c*/sfx.wav
+      - uses: actions/upload-artifact@v4
+        with: { name: plans, path: plans.tgz, retention-days: 7 }
+
+  render:
+    needs: [prep, plan]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 340
+    strategy:
+      fail-fast: false
+      matrix:
+        slug: ${{ fromJSON(needs.prep.outputs.chapters) }}
+    env:
+      SLUG: ${{ matrix.slug }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm, cache-dependency-path: what-if-studio/package-lock.json }
+      - uses: actions/download-artifact@v4
+        with: { pattern: "{plans,voice-${{ matrix.slug }}}", merge-multiple: true, path: dl }
+      - run: for f in dl/*.tgz; do tar xzf "$f"; done
+      - name: System packages
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg libnss3 libdbus-1-3 libatk1.0-0 libgbm-dev libasound2t64 libxrandr2 libxkbcommon-dev libxfixes3 libxcomposite1 libxdamage1 libatk-bridge2.0-0 libpango-1.0-0 libcairo2 libcups2
+      - name: Render chapter and its board
+        working-directory: what-if-studio
+        run: |
+          npm ci --no-audit --no-fund
+          npx remotion render src/index.ts PlanFilm "out/$SLUG/chapter.mp4" --props="out/$SLUG/plan.json" --concurrency=$(nproc) --crf=18 --audio-bitrate=320k --log=error
+          npx remotion render src/index.ts PlanBoard "out/$SLUG/board.mp4" --props="out/$SLUG/plan.json" --log=error
+          ffmpeg -v error -y -i "out/$SLUG/board.mp4" -vf "scale=384:-1,tile=5x5:padding=4" -frames:v 1 "out/$SLUG/board.jpg"
+      - run: tar czf "chapter-$SLUG.tgz" "what-if-studio/out/$SLUG/chapter.mp4" "what-if-studio/out/$SLUG/board.jpg"
+      - uses: actions/upload-artifact@v4
+        with: { name: "chapter-${{ matrix.slug }}", path: "chapter-${{ matrix.slug }}.tgz", retention-days: 7 }
+
+  join:
+    needs: [prep, plan, render]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - uses: actions/download-artifact@v4
+        with: { pattern: "{prep,plans,voice-*,chapter-*}", merge-multiple: true, path: dl }
+      - run: for f in dl/*.tgz; do tar xzf "$f"; done && sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg && pip install -q numpy
+      - run: python tools/longform.py join "$VIDEO"
+      - name: Video Doctor
+        run: python tools/doctor.py "$VIDEO" | tee doctor.txt
+      - run: mkdir -p final && cp what-if-studio/out/"$VIDEO"/"$VIDEO"-final.mp4 doctor.txt videos/"$VIDEO"/doctor.json final/ && for d in what-if-studio/out/"$VIDEO"-c*; do cp "$d/board.jpg" "final/$(basename $d)-board.jpg"; done
+      - uses: actions/upload-artifact@v4
+        with: { name: "final-${{ inputs.video }}", path: final, retention-days: 14 }
+      - name: Commit metadata (DNA, shot registry, plans summary, Doctor report)
+        run: |
+          git config user.name "github-actions"; git config user.email "github-actions@users.noreply.github.com"
+          git add dna/"$VIDEO".json registry/shots/"$VIDEO".json videos/"$VIDEO"/*.json
+          git diff --cached --quiet || (git commit -qm "video $VIDEO: metadata" && git pull -q --rebase && git push -q)
