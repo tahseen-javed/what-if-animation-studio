@@ -30,10 +30,31 @@ m.fc = torch.nn.Identity()
 x = (torch.tensor(imgs, dtype=torch.float32).permute(0, 3, 1, 2) - torch.tensor([0.485, 0.456, 0.406])[:, None, None]) / torch.tensor([0.229, 0.224, 0.225])[:, None, None]
 with torch.no_grad():
     e = torch.nn.functional.normalize(m(x), dim=1).numpy()
-d = 1 - e @ e.T
-pairs = sorted((float(d[i, j]), sets[i], sets[j]) for i in range(n) for j in range(i + 1, n))
-near = {s: round(float(min(d[i, j] for j in range(n) if j != i)), 3) for i, s in enumerate(sets)}
-rep = {'sets': sets, 'min_distance': round(pairs[0][0], 3), 'median_distance': round(float(np.median([p[0] for p in pairs])), 3),
-       'closest_pairs': [[round(a, 3), b, c] for a, b, c in pairs[:6]], 'nearest_neighbour': near, 'threshold': 0.15, 'ok': pairs[0][0] >= 0.15}
+rd = 1 - e @ e.T  # secondary: ResNet-18 (limit 0.15 kept, reported only)
+import open_clip  # noqa: E402  primary: OpenCLIP ViT-B-32 laion2b_s34b_b79k (MIT code and weights, docs/LICENSES_QA.md)
+from PIL import Image, ImageDraw, ImageFont  # noqa: E402
+
+clip, _, prep = open_clip.create_model_and_transforms('ViT-B-32', pretrained='laion2b_s34b_b79k')
+with torch.no_grad():
+    ce = torch.nn.functional.normalize(clip.eval().encode_image(torch.stack([prep(Image.fromarray((im * 255).astype('uint8'))) for im in imgs])), dim=1).numpy()
+d = 1 - ce @ ce.T
+pairs = sorted((float(d[i, j]), float(rd[i, j]), sets[i], sets[j]) for i in range(n) for j in range(i + 1, n))
+rep = {'sets': sets, 'metric': 'OpenCLIP ViT-B-32 laion2b_s34b_b79k cosine distance', 'min_distance': round(pairs[0][0], 3),
+       'median_distance': round(float(np.median([p[0] for p in pairs])), 3), 'closest_pairs': [[round(a, 3), b, c] for a, _, b, c in pairs[:6]],
+       'threshold': None, 'ok': None, 'note': 'CLIP limit pending owner calibration (calibration.jpg)',
+       'resnet18': {'min_distance': round(min(p[1] for p in pairs), 3), 'limit': 0.15, 'ok': min(p[1] for p in pairs) >= 0.15}}
+if label == 'all':  # owner calibration: the 5 most similar and 5 clearly different pairs, one sheet
+    cal = pairs[:5] + pairs[-5:]
+    big = np.frombuffer(subprocess.run(['ffmpeg', '-v', 'error', '-i', str(out / 'board.mp4'), '-vf', 'scale=480:270', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-'],
+                                       capture_output=True, check=True).stdout, np.uint8).reshape(-1, 270, 480, 3)
+    sheet = Image.new('RGB', (1920, 5 * 310), '#111111')
+    dr, font = ImageDraw.Draw(sheet), ImageFont.load_default(size=26)
+    for k, (cd, r, a, b) in enumerate(cal):
+        x, y = (k // 5) * 960, (k % 5) * 310
+        sheet.paste(Image.fromarray(big[sets.index(a)]), (x, y + 36))
+        sheet.paste(Image.fromarray(big[sets.index(b)]), (x + 480, y + 36))
+        dr.text((x + 10, y + 4), f"#{k + 1}  {a} | {b}   CLIP {cd:.3f}   ResNet {r:.3f}", fill='#F6EFE3', font=font)
+    sheet.save(out / 'calibration.jpg', quality=88)
+    rep['calibration_pairs'] = [{'n': k + 1, 'a': a, 'b': b, 'clip': round(cd, 3), 'resnet': round(r, 3)} for k, (cd, r, a, b) in enumerate(cal)]
 save(out / 'distances.json', rep)
-print(json.dumps({k: rep[k] for k in ('min_distance', 'median_distance', 'closest_pairs', 'ok')}))
+print(json.dumps({k: rep[k] for k in ('min_distance', 'median_distance', 'closest_pairs', 'resnet18')}))
