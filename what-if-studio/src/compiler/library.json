@@ -1134,19 +1134,13 @@
      "#8CC4B5"
     ]
    ],
-   "plants": [
-    [
-     0.92,
-     0.4
-    ]
-   ],
    "clock": [
     760,
     380
    ],
    "glow": "warm",
    "veil": 0.26,
-   "sky": "day"
+   "sky": "blinds"
   },
   "cafe": {
    "theme": "city",
@@ -1540,16 +1534,10 @@
     760
    ],
    "depth": 3.3,
-   "wall": "#4F5D4A",
-   "side": "#3F4B3B",
-   "floorC": "#2F3A2C",
-   "ceiling": "#262E24",
-   "win": [
-    480,
-    760,
-    360,
-    560
-   ],
+   "wall": "#E8B04B",
+   "side": "#C9952F",
+   "floorC": "#5B4A3A",
+   "ceiling": "#3A2E22",
    "pend": [
     [
      0.45,
@@ -1587,9 +1575,8 @@
      150
     ]
    ],
-   "glow": "cool",
-   "veil": 0.38,
-   "sky": "blinds"
+   "glow": "warm",
+   "veil": 0.38
   },
   "cinema": {
    "theme": "culture",
@@ -1657,10 +1644,10 @@
     760
    ],
    "floor": "tiles",
-   "wall": "#E7E1D6",
-   "side": "#D3CBBE",
-   "floorC": "#BFB4A2",
-   "ceiling": "#F2EEE7",
+   "wall": "#20242B",
+   "side": "#191C22",
+   "floorC": "#3A3F47",
+   "ceiling": "#121418",
    "pend": [
     [
      0.3,
@@ -1714,7 +1701,7 @@
     ]
    ],
    "glow": "warm",
-   "veil": 0.3
+   "veil": 0.45
   },
   "basement": {
    "theme": "house",
@@ -1794,10 +1781,10 @@
     760
    ],
    "depth": 3.3,
-   "wall": "#2E5E8C",
-   "side": "#244A6E",
+   "wall": "#2E7D5B",
+   "side": "#24624A",
    "floorC": "#C89B5E",
-   "ceiling": "#1F3B57",
+   "ceiling": "#1C4A38",
    "win": [
     480,
     1440,
