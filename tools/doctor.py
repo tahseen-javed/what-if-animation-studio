@@ -6,11 +6,39 @@ DNA novelty and Jaccard vs earlier videos. Marked SKIP until Phase 3: 360p legib
 consistency, banding/flicker, OpenCLIP perceptual diversity."""
 import json, os, re, subprocess, sys
 
+import numpy as np
+
 from common import ROOT, STUDIO, decode, duration, load, loudness, save, vdir
 from longform import master
 from shot_budget import budget
 
-SKIPPED = ['legibility_360p', 'overlay_overlap', 'character_consistency', 'banding_flicker', 'perceptual_diversity_openclip']
+SKIPPED = ['legibility_360p_scene_shots', 'overlay_overlap', 'character_consistency', 'banding_flicker', 'perceptual_diversity_openclip']
+UI = {}
+
+
+def frame(path, n, w=640, h=360):
+    """One storyboard still as 360p grayscale (0..1), straight from ffmpeg: no images reach Claude."""
+    raw = subprocess.run(['ffmpeg', '-v', 'error', '-i', str(path), '-vf', f'select=eq(n\\,{n}),scale={w}:{h},format=gray', '-frames:v', '1', '-f', 'rawvideo', '-'],
+                         capture_output=True).stdout
+    return np.frombuffer(raw, dtype=np.uint8).reshape(h, w) / 255.0 if len(raw) == w * h else None
+
+
+def ui_frames(vid, shots):
+    """Card and option-card stills: text contrast in the text band (WCAG large text >= 3:1), text present (edge
+    energy), and an 18x32 signature to compare the look against earlier videos."""
+    rows, sigs = [], []
+    for s in shots:
+        if s['kind'] not in ('card', 'options'):
+            continue
+        img = frame(STUDIO / 'out' / f"{vid}-c{s['chapter']:02d}" / 'board.mp4', int(s['id'][-3:]) - 1)
+        if img is None:
+            rows.append({'id': s['id'], 'contrast': 0, 'edges': 0})
+            continue
+        band = img[108:270]
+        lo, hi = np.percentile(band, 2), np.percentile(band, 98)
+        rows.append({'id': s['id'], 'kind': s['kind'], 'contrast': round(float((hi + 0.05) / (lo + 0.05)), 2), 'edges': round(float(np.abs(np.diff(band, axis=1)).mean()), 4)})
+        sigs.append(np.round(img[::20, ::20], 3).tolist())
+    return rows, sigs
 
 
 def detect(path):
@@ -87,6 +115,12 @@ def check(vid):
             other = {s['tuple'] for s in r['shots']}
             worst = max(worst, len(mine & other) / max(1, len(mine | other)))
     add('jaccard_vs_all', worst < B['jaccard_max'], round(worst, 3), f"< {B['jaccard_max']}")
+    rows, sigs = ui_frames(vid, shots)
+    UI['sig'] = sigs
+    add('ui_legibility_360p', rows and all(r['contrast'] >= 3 and r['edges'] >= 0.01 for r in rows), rows, 'contrast >= 3:1, edges >= 0.01 (card/option stills)')
+    earlier = [g for p in (ROOT / 'registry' / 'shots').glob('*.json') if (r := load(p)) and r['video'] != vid for g in r.get('ui_sig', [])]
+    diffs = [min(float(np.abs(np.array(a) - np.array(b)).mean()) for b in earlier) for a in sigs] if earlier else []
+    add('ui_style_differs', not diffs or min(diffs) >= 0.03, round(min(diffs), 3) if diffs else 'first video with UI signatures', '>= 0.03 mean difference vs every earlier video')
     for name in SKIPPED:
         res.append({'check': name, 'ok': None, 'severity': 'skip', 'value': 'Phase 3', 'limit': ''})
     return res
@@ -104,7 +138,7 @@ def main(vid):
     warns = [r for r in final if r['severity'] == 'warn']
     save(vdir(vid) / 'doctor.json', {'video': vid, 'checks': final, 'fixes': fixes, 'fails': len(fails), 'warns': len(warns)})
     sl, dna = load(vdir(vid) / 'shotlist.json'), load(ROOT / 'dna' / f'{vid}.json')
-    save(ROOT / 'registry' / 'shots' / f'{vid}.json', {'video': vid, 'created': dna['created'],
+    save(ROOT / 'registry' / 'shots' / f'{vid}.json', {'video': vid, 'created': dna['created'], 'ui_sig': UI.get('sig', []),
                                                        'shots': [{k: s[k] for k in ('set', 'angle', 'cam', 'light', 'pose', 'trans', 'prop', 'tuple')} for s in sl['shots']]})
     passed = sum(1 for r in final if r['ok'])
     print(f"DOCTOR {vid}: {passed} pass, {len(fails)} fail, {len(warns)} warn, {len(SKIPPED)} skip; fixes: {fixes or 'none'}")

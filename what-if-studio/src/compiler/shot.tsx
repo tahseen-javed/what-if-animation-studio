@@ -295,7 +295,7 @@ export const SpecShot: React.FC<{ spec: Spec; t: number; len: number; f: number 
   const cast = kind === 'scene' || kind === 'punch' ? spec.cast ?? [] : [];
   const marks = cast.map((c) => set.marks[(c.mark ?? 0) % Math.max(1, set.marks.length)]);
   const focus = marks[spec.focus ?? 0];
-  const fr = move(spec.cam ?? 'static', t, len, frameFor(kind === 'punch' ? 'close' : spec.angle ?? 'wide', focus, marks[1]), seed);
+  const fr = move(spec.cam ?? 'static', t, len, frameFor(spec.angle ?? (kind === 'punch' ? 'close' : 'wide'), focus, marks[1]), seed);
   const camera = `${fr.rot ? `rotate(${fr.rot} 960 540) ` : ''}${camT(fr.cx, fr.cy, fr.z)}`;
   const satOf = (n?: string) => (n ? LIBRARY.lights[n] ?? [] : []).find((l) => l.sat !== undefined)?.sat;
   const sats = [satOf(spec.light), satOf(spec.tone ? `tone_${spec.tone}` : undefined)].filter((s): s is number => s !== undefined);

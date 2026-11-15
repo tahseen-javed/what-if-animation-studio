@@ -61,17 +61,43 @@ ONES = 'zero one two three four five six seven eight nine ten eleven twelve thir
 TENS = 'x x twenty thirty forty fifty sixty seventy eighty ninety'.split()
 
 
-def say(n):
-    """A number as words, so whisper's "2,500" lines up with a script's "two thousand five hundred"."""
-    if n < 20:
-        return [ONES[n]]
-    if n < 100:
-        return [TENS[n // 10]] + ([ONES[n % 10]] if n % 10 else [])
-    if n < 1000:
-        return [ONES[n // 100], 'hundred'] + (say(n % 100) if n % 100 else [])
-    for d, w in ((10 ** 9, 'billion'), (10 ** 6, 'million'), (1000, 'thousand')):
-        if n >= d:
-            return say(n // d) + [w] + (say(n % d) if n % d else [])
+UNITS = {w: i for i, w in enumerate(ONES)}
+TENSV = {w: 10 * i for i, w in enumerate(TENS) if i >= 2}
+SCALES = {'hundred': 100, 'thousand': 1000, 'million': 10 ** 6, 'billion': 10 ** 9}
+isnum = lambda w: w in UNITS or w in TENSV or w in SCALES
+
+
+def value(ws):
+    total, cur = 0, 0
+    for w in ws:
+        if w in UNITS:
+            cur += UNITS[w]
+        elif w in TENSV:
+            cur += TENSV[w]
+        elif w == 'hundred':
+            cur = max(1, cur) * 100
+        else:
+            total, cur = total + max(1, cur) * SCALES[w], 0
+    return str(total + cur)
+
+
+def collapse(tokens):
+    """Text normalization for the comparison: a run of number words becomes one value ("two thousand five hundred" ->
+    "2500"), digits stay digits ("2,500" -> "2500"). Returns the tokens and, for each, the original indices it covers."""
+    out, groups, i = [], [], 0
+    while i < len(tokens):
+        if isnum(tokens[i]):
+            j = i
+            while j < len(tokens) and (isnum(tokens[j]) or (tokens[j] == 'and' and j + 1 < len(tokens) and isnum(tokens[j + 1]))):
+                j += 1
+            out.append(value([t for t in tokens[i:j] if t != 'and']))
+            groups.append(list(range(i, j)))
+            i = j
+        else:
+            out.append(tokens[i])
+            groups.append([i])
+            i += 1
+    return out, groups
 
 
 def align(x, text):
@@ -83,17 +109,20 @@ def align(x, text):
         for wd in seg.words:
             raw = wd.word.strip()
             num = re.fullmatch(r'\$?(\d[\d,]*)(?:st|nd|rd|th)?[.,!?]*', raw)
-            parts = say(int(num.group(1).replace(',', ''))) if num else re.findall(r"[\w'’]+", raw)
+            parts = [num.group(1).replace(',', '')] if num else re.findall(r"[\w'’]+", raw)
             for k, part in enumerate(parts):
                 d = (wd.end - wd.start) / len(parts)
                 W.append((norm(part), wd.start + k * d, wd.start + (k + 1) * d))
     st, en = [None] * len(S), [None] * len(S)
-    A, Bw = [norm(t['w']) for t in S], [w[0] for w in W]
+    A, ga = collapse([norm(t['w']) for t in S])
+    Bw, gb = collapse([w[0] for w in W])
     for tag, i1, i2, j1, j2 in difflib.SequenceMatcher(None, A, Bw, autojunk=False).get_opcodes():
         if tag == 'equal' or (tag == 'replace' and i2 - i1 == j2 - j1):  # spelling variants count (neighbours/neighbors)
             for k in range(i2 - i1):
                 if tag == 'equal' or difflib.SequenceMatcher(None, A[i1 + k], Bw[j1 + k]).ratio() >= 0.75:
-                    st[i1 + k], en[i1 + k] = W[j1 + k][1], W[j1 + k][2]
+                    idx, s0, e0 = ga[i1 + k], W[gb[j1 + k][0]][1], W[gb[j1 + k][-1]][2]
+                    for q, i in enumerate(idx):  # a matched number spreads its time over its words
+                        st[i], en[i] = s0 + (e0 - s0) * q / len(idx), s0 + (e0 - s0) * (q + 1) / len(idx)
     miss = [S[i]['w'] for i in range(len(S)) if st[i] is None]
     dur = len(x) / SR
     i = 0
@@ -141,10 +170,10 @@ for text in job['beats']:
 nwords = sum(len(t[1]) for t in takes)
 speech = sum(len(t[0]) for t in takes) / SR
 commas = sum(1 for t in takes for w in t[1][:-1] if re.search(r'[,;:—–]', w['p']))
-gaps = [1.25 if re.search(r'[?!]', t[1][-1]['p'] if t[1] else '') else 1.0 for t in takes[:-1]]
+gaps = [1.0 for _ in takes[:-1]]  # even pauses: every pause point (sentence end or comma) gets the same length
 need = 60 * nwords / O['target_wpm'] - speech if O.get('target_wpm') else 0
-P = max(O['beat_pause'], min(1.1, need / max(1e-9, sum(gaps) + 0.45 * commas))) if need > 0 else O['beat_pause']
-C = min(0.5, max(0.12, 0.45 * P)) if need > 0 else 0
+P = max(O['beat_pause'], min(O.get('max_pause', 1.1), need / max(1e-9, len(gaps) + commas))) if need > 0 else O['beat_pause']
+C = P if need > 0 else 0
 print(f'  natural pace {60 * nwords / max(1e-9, speech):.0f} wpm in speech; sentence pause {P:.2f}s, comma pause {C:.2f}s', flush=True)
 
 audio, words, off, matched, total, unmatched = [], [], 0.0, 0, 0, []

@@ -148,7 +148,7 @@ def main(vid):
                 kind = 'options' if '?' in text else ints[n_int % len(ints)]
                 n_int += kind != 'options'
                 next_int = g0 + rng.uniform(*B['interrupt_gap_s'])
-                spec.update(kind=kind, set=scene['set'], v=scene['v'], light=scene['light'], angle='wide', cam=rng.choice(['pushIn', 'settle', 'drift']),
+                spec.update(kind=kind, set=scene['set'], v=scene['v'], light=scene['light'], angle=kind, cam=rng.choice(['pushIn', 'settle', 'drift']),
                             trans=rng.choice(['flash', 'zoom', 'whip', 'dipWhite']), skin=DM['uiSkin'])
                 if kind == 'options':
                     spec.update(items=option_items(text), opt=DM['optionCard'], v={**scene['v'], 'veil': 0.3})
@@ -164,8 +164,10 @@ def main(vid):
                     if nums:
                         spec['num'] = int(nums[0].replace(',', ''))
                 else:  # punch: crash into the hero's face on a flash
-                    spec.update(cast=[{**hero, 'pose': 'shock'}], cam='crashZoom', trans='flash', angle='close')
+                    spec.update(cast=[{**hero, 'pose': 'shock'}], cam='crashZoom', trans='flash', angle='extremeClose' if prev_angle == 'close' else 'close')
                     fx.append({'f': af, 'kind': 'flash', 'o': 0.6})
+                if spec['angle'] == prev_angle:  # each interrupt gets its own framing, never the previous shot's
+                    spec['angle'] += 'B'
                 pose, angle = spec.get('cast', [{}])[0].get('pose', kind), spec['angle']
             else:
                 kind = 'scene'

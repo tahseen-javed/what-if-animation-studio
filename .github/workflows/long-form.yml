@@ -106,7 +106,7 @@ jobs:
           npx remotion render src/index.ts PlanFilm "out/$SLUG/chapter.mp4" --props="out/$SLUG/plan.json" --concurrency=$(nproc) --crf=18 --audio-bitrate=320k --log=error
           npx remotion render src/index.ts PlanBoard "out/$SLUG/board.mp4" --props="out/$SLUG/plan.json" --log=error
           ffmpeg -v error -y -i "out/$SLUG/board.mp4" -vf "scale=384:-1,tile=5x5:padding=4" -frames:v 1 "out/$SLUG/board.jpg"
-      - run: tar czf "chapter-$SLUG.tgz" "what-if-studio/out/$SLUG/chapter.mp4" "what-if-studio/out/$SLUG/board.jpg"
+      - run: tar czf "chapter-$SLUG.tgz" "what-if-studio/out/$SLUG/chapter.mp4" "what-if-studio/out/$SLUG/board.jpg" "what-if-studio/out/$SLUG/board.mp4"
       - uses: actions/upload-artifact@v4
         with: { name: "chapter-${{ matrix.slug }}", path: "chapter-${{ matrix.slug }}.tgz", retention-days: 7 }
 
