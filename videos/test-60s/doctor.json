@@ -3,15 +3,15 @@
  "checks": [
   {
    "check": "length_s",
-   "ok": false,
-   "value": 43.8,
+   "ok": true,
+   "value": 55.6,
    "limit": "60s +-15%",
-   "severity": "warn"
+   "severity": "ok"
   },
   {
    "check": "loudness_lufs",
    "ok": true,
-   "value": -14.1,
+   "value": -14.0,
    "limit": "-14 +-0.5",
    "severity": "ok"
   },
@@ -38,20 +38,20 @@
   },
   {
    "check": "av_sync_s",
-   "ok": true,
-   "value": -0.081,
+   "ok": false,
+   "value": -0.124,
    "limit": "<= 0.1",
-   "severity": "ok"
+   "severity": "fail"
   },
   {
    "check": "shot_count",
-   "ok": false,
+   "ok": true,
    "value": 14,
    "limit": [
-    15,
-    20
+    14,
+    19
    ],
-   "severity": "fail"
+   "severity": "ok"
   },
   {
    "check": "shot_len_s",
@@ -75,10 +75,10 @@
   },
   {
    "check": "interrupt_max_gap_s",
-   "ok": true,
-   "value": 16.9,
+   "ok": false,
+   "value": 22.6,
    "limit": "<= 15(+3 at the end)",
-   "severity": "ok"
+   "severity": "warn"
   },
   {
    "check": "locations",
@@ -114,14 +114,14 @@
   {
    "check": "voice_vs_script_pct",
    "ok": false,
-   "value": 91.5,
+   "value": 94.3,
    "limit": ">= 95",
    "severity": "fail"
   },
   {
    "check": "speaking_rate_wpm",
    "ok": false,
-   "value": 197,
+   "value": 155,
    "limit": [
     125,
     150
@@ -132,8 +132,8 @@
    "check": "music_present",
    "ok": true,
    "value": [
-    0.0049,
-    0.0049
+    0.004,
+    0.004
    ],
    "limit": "> 0.002 rms in every chapter",
    "severity": "ok"
