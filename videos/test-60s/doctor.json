@@ -4,16 +4,16 @@
   {
    "check": "fresh_shot_data",
    "ok": true,
-   "value": "43729168943",
-   "limit": "this run (43729168943)",
+   "value": "43733419462",
+   "limit": "this run (43733419462)",
    "severity": "ok"
   },
   {
    "check": "length_s",
-   "ok": true,
-   "value": 59.8,
+   "ok": false,
+   "value": 50.5,
    "limit": "60s +-15%",
-   "severity": "ok"
+   "severity": "warn"
   },
   {
    "check": "loudness_lufs",
@@ -38,25 +38,25 @@
   },
   {
    "check": "frozen_frames",
-   "ok": true,
-   "value": 0,
+   "ok": false,
+   "value": 1,
    "limit": 0,
-   "severity": "ok"
+   "severity": "warn"
   },
   {
    "check": "av_sync_s",
    "ok": true,
-   "value": -0.006,
+   "value": -0.004,
    "limit": "<= 0.1",
    "severity": "ok"
   },
   {
    "check": "shot_count",
    "ok": true,
-   "value": 18,
+   "value": 15,
    "limit": [
-    15,
-    20
+    13,
+    17
    ],
    "severity": "ok"
   },
@@ -64,8 +64,8 @@
    "check": "shot_len_s",
    "ok": true,
    "value": [
-    1.62,
-    4.93
+    1.7,
+    4.8
    ],
    "limit": [
     1.5,
@@ -76,21 +76,21 @@
   {
    "check": "hook_shots_8s",
    "ok": true,
-   "value": 5,
+   "value": 4,
    "limit": ">= 3",
    "severity": "ok"
   },
   {
    "check": "interrupt_max_gap_s",
    "ok": true,
-   "value": 17.8,
+   "value": 16.2,
    "limit": "<= 15(+3 at the end)",
    "severity": "ok"
   },
   {
    "check": "locations",
    "ok": true,
-   "value": 7,
+   "value": 6,
    "limit": [
     4,
     5
@@ -99,10 +99,10 @@
   },
   {
    "check": "consecutive_framing",
-   "ok": false,
-   "value": 1,
+   "ok": true,
+   "value": 0,
    "limit": 0,
-   "severity": "fail"
+   "severity": "ok"
   },
   {
    "check": "background_return_20s",
@@ -121,7 +121,7 @@
   {
    "check": "voice_vs_script_pct",
    "ok": true,
-   "value": 97.9,
+   "value": 97.2,
    "limit": ">= 95",
    "severity": "ok"
   },
@@ -131,6 +131,7 @@
    "severity": "info",
    "limit": "",
    "value": [
+    "two",
     "thousand",
     "five",
     "hundred"
@@ -138,20 +139,20 @@
   },
   {
    "check": "speaking_rate_wpm",
-   "ok": true,
-   "value": 143,
+   "ok": false,
+   "value": 170,
    "limit": [
     125,
     150
    ],
-   "severity": "ok"
+   "severity": "warn"
   },
   {
    "check": "music_present",
    "ok": true,
    "value": [
-    0.0086,
-    0.0097
+    0.0083,
+    0.0093
    ],
    "limit": "> 0.002 rms in every chapter",
    "severity": "ok"
@@ -177,7 +178,34 @@
    "severity": "ok"
   },
   {
-   "check": "legibility_360p",
+   "check": "ui_legibility_360p",
+   "ok": false,
+   "value": [
+    {
+     "id": "C01S007",
+     "kind": "card",
+     "contrast": 5.98,
+     "edges": 0.0175
+    },
+    {
+     "id": "C02S004",
+     "kind": "options",
+     "contrast": 3.49,
+     "edges": 0.0098
+    }
+   ],
+   "limit": "contrast >= 3:1, edges >= 0.01 (card/option stills)",
+   "severity": "fail"
+  },
+  {
+   "check": "ui_style_differs",
+   "ok": true,
+   "value": "first video with UI signatures",
+   "limit": ">= 0.03 mean difference vs every earlier video",
+   "severity": "ok"
+  },
+  {
+   "check": "legibility_360p_scene_shots",
    "ok": null,
    "severity": "skip",
    "value": "Phase 3",
@@ -214,5 +242,5 @@
  ],
  "fixes": [],
  "fails": 1,
- "warns": 0
+ "warns": 3
 }
