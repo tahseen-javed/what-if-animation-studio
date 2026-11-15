@@ -349,6 +349,62 @@
     "grad": "edge",
     "sat": 0.2
    }
+  ],
+  "tone_warm": [
+   {
+    "fill": "#FF9A4D",
+    "o": 0.13,
+    "blend": "soft-light"
+   }
+  ],
+  "tone_cool": [
+   {
+    "fill": "#4D8BFF",
+    "o": 0.14,
+    "blend": "soft-light"
+   }
+  ],
+  "tone_red": [
+   {
+    "fill": "#FF3030",
+    "o": 0.14,
+    "blend": "soft-light"
+   }
+  ],
+  "tone_desat": [
+   {
+    "fill": "#808080",
+    "o": 0.0,
+    "sat": 0.7
+   }
+  ],
+  "tone_sat": [
+   {
+    "fill": "#808080",
+    "o": 0.0,
+    "sat": 1.25
+   }
+  ],
+  "tone_night": [
+   {
+    "fill": "#1B2A6B",
+    "o": 0.22,
+    "blend": "multiply"
+   }
+  ],
+  "tone_dawn": [
+   {
+    "fill": "#FFB3C8",
+    "o": 0.13,
+    "blend": "soft-light"
+   }
+  ],
+  "tone_dusk": [
+   {
+    "fill": "#FF8A3D",
+    "o": 0.14,
+    "blend": "soft-light"
+   }
   ]
  },
  "poses": {
@@ -609,7 +665,8 @@
   "card",
   "diagram",
   "punch",
-  "insert"
+  "insert",
+  "options"
  ],
  "palettes": {
   "natural": "none",
@@ -640,6 +697,31 @@
    "sis",
    "mom",
    "suit"
+  ]
+ },
+ "styles": {
+  "titleLook": [
+   "bold",
+   "outline",
+   "stacked",
+   "handwritten",
+   "neonSign",
+   "stamp"
+  ],
+  "uiSkin": [
+   "pill",
+   "glass",
+   "chalk",
+   "terminal",
+   "paper",
+   "neon"
+  ],
+  "optionCard": [
+   "tiles",
+   "split",
+   "stack",
+   "badge",
+   "ticket"
   ]
  }
 }

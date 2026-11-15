@@ -4,7 +4,7 @@ Phase 1 covers: length, loudness/true peak, black and frozen frames, A/V sync, s
 interrupts, locations), framing and background rules, tuple repeats, voice vs script, speaking rate, music present,
 DNA novelty and Jaccard vs earlier videos. Marked SKIP until Phase 3: 360p legibility, overlay overlap, character
 consistency, banding/flicker, OpenCLIP perceptual diversity."""
-import json, re, subprocess, sys
+import json, os, re, subprocess, sys
 
 from common import ROOT, STUDIO, decode, duration, load, loudness, save, vdir
 from longform import master
@@ -34,6 +34,9 @@ def check(vid):
 
     def add(name, ok, value, limit, severity='fail'):
         res.append({'check': name, 'ok': bool(ok), 'value': value, 'limit': limit, 'severity': 'ok' if ok else severity})
+
+    run = os.environ.get('GITHUB_RUN_ID', 'local')
+    add('fresh_shot_data', sl.get('run') == run, sl.get('run'), f'this run ({run})')
 
     L = duration(final)
     add('length_s', abs(L - meta['minutes'] * 60) <= 0.15 * meta['minutes'] * 60, round(L, 1), f"{meta['minutes'] * 60:.0f}s +-15%", 'warn')
@@ -70,6 +73,7 @@ def check(vid):
     stats = [load(STUDIO / 'out' / c['slug'] / 'words_raw.stats.json', {}) for c in chs]
     matched, total = sum(s.get('matched', 0) for s in stats), sum(s.get('total', 0) for s in stats)
     add('voice_vs_script_pct', total and matched / total >= 0.95, round(100 * matched / max(1, total), 1), '>= 95')
+    res.append({'check': 'unmatched_words', 'ok': None, 'severity': 'info', 'limit': '', 'value': [w for s in stats for w in s.get('unmatched', [])][:30]})
     speech = sum(duration(STUDIO / 'public' / c['slug'] / 'voice.wav') for c in chs)
     wpm = 60 * total / max(1, speech)
     add('speaking_rate_wpm', B['wpm'][0] <= wpm <= B['wpm'][1], round(wpm), B['wpm'], 'warn')
@@ -93,7 +97,7 @@ def main(vid):
     fixes = []
     if any(r['check'] in ('loudness_lufs', 'true_peak_dbtp') and r['ok'] is False for r in first):  # the one fix batch
         out = STUDIO / 'out' / vid
-        master(out / f'{vid}-raw.mp4', out / f'{vid}-final.mp4')
+        master(out / f'{vid}-raw.mkv', out / f'{vid}-final.mp4')
         fixes.append('re-mastered loudness')
     final = check(vid) if fixes else first  # the one verify
     fails = [r for r in final if r['severity'] == 'fail']
@@ -104,7 +108,7 @@ def main(vid):
                                                        'shots': [{k: s[k] for k in ('set', 'angle', 'cam', 'light', 'pose', 'trans', 'prop', 'tuple')} for s in sl['shots']]})
     passed = sum(1 for r in final if r['ok'])
     print(f"DOCTOR {vid}: {passed} pass, {len(fails)} fail, {len(warns)} warn, {len(SKIPPED)} skip; fixes: {fixes or 'none'}")
-    for r in fails + warns:
+    for r in fails + warns + [r for r in final if r['severity'] == 'info' and r['value']]:
         print(f"  {r['severity'].upper()} {r['check']}: {r['value']} (limit {r['limit']})")
 
 

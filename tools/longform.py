@@ -4,11 +4,11 @@ python tools/longform.py join <video>                           concat the chapt
 videos/<video>/script.txt is used word for word; [bracketed tags] are hints for the director and are never spoken."""
 import json, os, re, subprocess, sys
 
-from common import ROOT, STUDIO, load, save, vdir
+from common import FPS, ROOT, STUDIO, load, save, vdir
 import dna as dnamod
 
 VOICE = {'seed': 1234, 'exaggeration': 0.5, 'cfg_weight': 0.5, 'temperature': 0.8, 'beat_pause': 0.35, 'target_wpm': 140}
-GAPS = {'word': 0.18, 'comma': 0.35, 'sentence': 0.6, 'question': 0.7}
+GAPS = {'word': 0.25, 'comma': 0.6, 'sentence': 1.3, 'question': 1.4}  # caps only: the worker sets the natural pauses
 
 
 def prep(vid, chapter_seconds=75.0):
@@ -67,10 +67,15 @@ def join(vid):
     chs = load(vdir(vid) / 'chapters.json')
     out = STUDIO / 'out' / vid
     out.mkdir(parents=True, exist_ok=True)
-    lst = out / 'concat.txt'
-    lst.write_text(''.join(f"file '{(STUDIO / 'out' / c['slug'] / 'chapter.mp4').as_posix()}'\n" for c in chs), encoding='utf-8')
-    raw = out / f'{vid}-raw.mp4'
-    subprocess.run(['ffmpeg', '-v', 'error', '-y', '-f', 'concat', '-safe', '0', '-i', str(lst), '-c', 'copy', str(raw)], check=True)
+    run = lambda *a: subprocess.run(['ffmpeg', '-v', 'error', '-y', *map(str, a)], check=True)
+    for c in chs:  # each chapter's audio cut or padded to exactly its frame count: sample-accurate, so no drift can build up
+        run('-i', STUDIO / 'out' / c['slug'] / 'chapter.mp4', '-vn', '-af', 'apad', '-t', f"{c['frames'] / FPS:.6f}", '-ar', '48000', '-ac', '2', '-c:a', 'pcm_s16le', out / f"{c['slug']}.wav")
+    (out / 'v.txt').write_text(''.join(f"file '{(STUDIO / 'out' / c['slug'] / 'chapter.mp4').as_posix()}'\n" for c in chs), encoding='utf-8')
+    (out / 'a.txt').write_text(''.join(f"file '{(out / (c['slug'] + '.wav')).as_posix()}'\n" for c in chs), encoding='utf-8')
+    run('-f', 'concat', '-safe', '0', '-i', out / 'v.txt', '-c', 'copy', '-an', out / 'video.mp4')
+    run('-f', 'concat', '-safe', '0', '-i', out / 'a.txt', '-c', 'copy', out / 'audio.wav')
+    raw = out / f'{vid}-raw.mkv'
+    run('-i', out / 'video.mp4', '-i', out / 'audio.wav', '-map', '0:v', '-map', '1:a', '-c', 'copy', raw)
     master(raw, out / f'{vid}-final.mp4')
     print(f'joined {len(chs)} chapters -> {out / f"{vid}-final.mp4"}')
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   basePose, poseAt, faceAt, walkPose, Hero, LOOKS, Pose, Expr, CastName, camT, clamp, easeOut, easeInOut, backOut, rnd,
-  Foreground, TitleCard, FocusRings, Tabletop, SchLabel, CountUp, Arrow, Mug, Phone, OpenBook, PaperBall, PizzaSlice,
+  Foreground, FocusRings, Tabletop, CountUp, Arrow, FONT, Mug, Phone, OpenBook, PaperBall, PizzaSlice,
   AlarmClock, Paper, GamePad, CookieStack, BookTower, CookieTop, PlateTop, Guitar, Amp,
 } from '../engine';
 import LIB from './library.json';
@@ -21,9 +21,9 @@ export const LIBRARY = LIB as unknown as Library;
 
 export type CastSpec = { look?: string; pose?: string; expr?: string; mark?: number; yaw?: number; facing?: 1 | -1 };
 export type Spec = {
-  id: string; kind?: 'scene' | 'insert' | 'card' | 'diagram' | 'punch'; set: string; v?: V; angle?: string; cam?: string;
+  id: string; kind?: 'scene' | 'insert' | 'card' | 'diagram' | 'punch' | 'options'; set: string; v?: V; angle?: string; cam?: string;
   light?: string; trans?: string; cast?: CastSpec[]; focus?: number; prop?: string; text?: string[]; num?: number; tOff?: number;
-  seed?: number; ots?: string; edge?: number;
+  seed?: number; ots?: string; edge?: number; title?: string; skin?: string; opt?: string; tone?: string; items?: string[];
 };
 
 const LIMBS = ['armL', 'armR', 'legL', 'legR'] as const;
@@ -198,6 +198,95 @@ const Overlay: React.FC<{ name?: string; t: number; uid: string }> = ({ name, t,
   return null;
 };
 
+// DNA-driven UI: uiSkin colours panels and option cards, titleLook styles cards, optionCard lays out a decision.
+const SKIN: Record<string, { bg: string; o: number; fg: string; acc: string; font: string; r: number }> = {
+  pill: { bg: '#14121F', o: 0.78, fg: '#F6EFE3', acc: '#FFB347', font: FONT.ui, r: 40 },
+  glass: { bg: '#FFFFFF', o: 0.16, fg: '#FFFFFF', acc: '#9FE7FF', font: FONT.ui, r: 26 },
+  chalk: { bg: '#1F3A2E', o: 0.94, fg: '#EDEDE0', acc: '#F7D774', font: FONT.hand, r: 8 },
+  terminal: { bg: '#050A05', o: 0.92, fg: '#39FF7A', acc: '#B6FFCB', font: FONT.ui, r: 4 },
+  paper: { bg: '#F3E7CF', o: 0.96, fg: '#2A2118', acc: '#C2410C', font: FONT.hand, r: 10 },
+  neon: { bg: '#0B0620', o: 0.86, fg: '#FF5FD2', acc: '#2FE0FF', font: FONT.title, r: 30 },
+};
+
+const Panel: React.FC<{ t: number; text: string; skin?: string }> = ({ t, text, skin }) => {
+  const S = SKIN[skin ?? 'pill'] ?? SKIN.pill;
+  const w = Math.max(420, text.length * 46 + 120);
+  return (
+    <g transform={`translate(960 300) scale(${backOut(clamp(t / 10))}) translate(-960 -300)`}>
+      <rect x={960 - w / 2} y={230} width={w} height={140} rx={S.r} fill={S.bg} opacity={S.o} stroke={S.acc} strokeWidth={skin === 'neon' || skin === 'glass' ? 3 : 0} />
+      <text x={960} y={325} textAnchor="middle" fontFamily={S.font} fontSize={72} fill={S.fg}>{text}</text>
+    </g>
+  );
+};
+
+const Card: React.FC<{ t: number; lines: string[]; style?: string }> = ({ t, lines, style }) => {
+  const [a = '', b = ''] = lines;
+  const p = easeOut(clamp(t / 8));
+  const T = (y: number, s: string, size: number, fill: string, extra: React.SVGProps<SVGTextElement> = {}) => (
+    <text x={960} y={y} textAnchor="middle" fontFamily={FONT.title} fontSize={size} fill={fill} {...extra}>{s}</text>
+  );
+  switch (style) {
+    case 'outline':
+      return <g opacity={p}>{T(500, a, 118, 'none', { stroke: '#F6EFE3', strokeWidth: 4 })}{T(640, b, 132, 'none', { stroke: '#FFB347', strokeWidth: 5 })}</g>;
+    case 'stacked':
+      return <g opacity={p}><rect x={960 - 420 * p} y={540} width={840 * p} height={10} fill="#FFB347" />{T(510, a, 64, '#F6EFE3', { letterSpacing: 12 })}{T(690, b, 150, '#F6EFE3')}</g>;
+    case 'handwritten':
+      return (
+        <g opacity={p} transform="rotate(-3 960 560)">
+          {T(520, a, 110, '#F6EFE3', { fontFamily: FONT.hand })}{T(650, b, 120, '#FFD27A', { fontFamily: FONT.hand })}
+          <path d="M 620 690 Q 960 720 1300 680" stroke="#FFD27A" strokeWidth={8} fill="none" strokeLinecap="round" strokeDasharray={760} strokeDashoffset={760 * (1 - clamp((t - 6) / 10))} />
+        </g>
+      );
+    case 'neonSign':
+      return (
+        <g opacity={p * (t % 37 < 2 ? 0.4 : 1)}>
+          <filter id="cneon"><feGaussianBlur stdDeviation="8" result="b" /><feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
+          <g filter="url(#cneon)">{T(500, a, 112, 'none', { stroke: '#FF5FD2', strokeWidth: 5 })}{T(640, b, 124, 'none', { stroke: '#2FE0FF', strokeWidth: 5 })}</g>
+        </g>
+      );
+    case 'stamp': {
+      const s = 1 + 0.4 * (1 - backOut(clamp(t / 7)));
+      return (
+        <g transform={`rotate(-8 960 560) translate(960 560) scale(${s}) translate(-960 -560)`} opacity={clamp(t / 3)}>
+          <rect x={520} y={400} width={880} height={300} rx={18} fill="none" stroke="#E5383B" strokeWidth={14} />{T(520, a, 92, '#E5383B')}{T(650, b, 110, '#E5383B')}
+        </g>
+      );
+    }
+    default:
+      return (
+        <g opacity={p} transform={`translate(960 560) scale(${0.9 + 0.1 * p}) translate(-960 -560)`}>
+          {T(506, a, 104, '#F6EFE3', { stroke: '#0E0C1E', strokeWidth: 10, paintOrder: 'stroke' })}{T(646, b, 128, '#FFB347', { stroke: '#0E0C1E', strokeWidth: 12, paintOrder: 'stroke' })}
+        </g>
+      );
+  }
+};
+
+const Options: React.FC<{ t: number; items: string[]; style?: string; skin?: string }> = ({ t, items, style, skin }) => {
+  const S = SKIN[skin ?? 'pill'] ?? SKIN.pill;
+  const k = (i: number) => backOut(clamp((t - 3 - i * 5) / 10));
+  const label = (x: number, y: number, s: string, size = 72, fill = S.fg) => <text x={x} y={y} textAnchor="middle" fontFamily={S.font} fontSize={size} fill={fill}>{s}</text>;
+  const ab = [items[0] ?? 'YES', items[1] ?? 'NO'];
+  switch (style) {
+    case 'split':
+      return (
+        <g>
+          <rect x={0} y={0} width={960 * k(0)} height={1080} fill={S.acc} opacity={0.22} />
+          <rect x={1920 - 960 * k(1)} y={0} width={960 * k(1)} height={1080} fill={S.fg} opacity={0.14} />
+          <line x1={960} y1={1080 * (1 - k(0))} x2={960} y2={1080} stroke={S.fg} strokeWidth={6} />
+          {label(480, 560, ab[0], 96)}{label(1440, 560, ab[1], 96)}
+        </g>
+      );
+    case 'stack':
+      return <g>{ab.map((s, i) => <g key={i} transform={`translate(${(1 - k(i)) * -900} 0)`}><rect x={460} y={400 + i * 190} width={1000} height={150} rx={S.r} fill={S.bg} opacity={S.o} /><circle cx={540} cy={475 + i * 190} r={46} fill={S.acc} />{label(540, 498 + i * 190, i ? 'B' : 'A', 60, S.bg)}{label(1010, 500 + i * 190, s)}</g>)}</g>;
+    case 'badge':
+      return <g>{ab.map((s, i) => <g key={i} transform={`translate(${i ? 1300 : 620} 540) scale(${k(i)})`}><circle r={220} fill={S.bg} opacity={S.o} stroke={S.acc} strokeWidth={10} />{label(0, 24, s, 76)}</g>)}</g>;
+    case 'ticket':
+      return <g>{ab.map((s, i) => <g key={i} transform={`translate(${i ? 1340 : 580} ${540 + (1 - k(i)) * 700}) rotate(${i ? 4 : -4})`}><path d="M -300 -140 H 300 V -40 A 40 40 0 0 0 300 40 V 140 H -300 V 40 A 40 40 0 0 0 -300 -40 Z" fill={S.bg} opacity={S.o} stroke={S.acc} strokeWidth={6} strokeDasharray="18 12" />{label(0, 26, s, 76)}</g>)}</g>;
+    default:
+      return <g>{ab.map((s, i) => <g key={i} transform={`translate(${i ? 1340 : 580} 540) scale(${k(i)})`}><rect x={-320} y={-150} width={640} height={300} rx={S.r} fill={S.bg} opacity={S.o} stroke={S.acc} strokeWidth={6} />{label(0, 26, s, 80)}</g>)}</g>;
+  }
+};
+
 export const SpecShot: React.FC<{ spec: Spec; t: number; len: number; f: number }> = ({ spec, t, len }) => {
   const uid = spec.id;
   const seed = spec.seed ?? 1;
@@ -208,7 +297,9 @@ export const SpecShot: React.FC<{ spec: Spec; t: number; len: number; f: number 
   const focus = marks[spec.focus ?? 0];
   const fr = move(spec.cam ?? 'static', t, len, frameFor(kind === 'punch' ? 'close' : spec.angle ?? 'wide', focus, marks[1]), seed);
   const camera = `${fr.rot ? `rotate(${fr.rot} 960 540) ` : ''}${camT(fr.cx, fr.cy, fr.z)}`;
-  const sat = (LIBRARY.lights[spec.light ?? 'neutral'] ?? []).find((l) => l.sat !== undefined)?.sat;
+  const satOf = (n?: string) => (n ? LIBRARY.lights[n] ?? [] : []).find((l) => l.sat !== undefined)?.sat;
+  const sats = [satOf(spec.light), satOf(spec.tone ? `tone_${spec.tone}` : undefined)].filter((s): s is number => s !== undefined);
+  const sat = sats.length ? sats.reduce((a, b) => a * b, 1) : undefined;
   const en = entry(spec.trans, t);
   const blurIn = spec.trans === 'blur' && t < 8 ? 14 * (1 - easeOut(clamp(t / 8))) : 0;
   const iris = spec.trans === 'iris' && t < 10;
@@ -232,10 +323,9 @@ export const SpecShot: React.FC<{ spec: Spec; t: number; len: number; f: number 
       {kind === 'scene' && spec.prop && focus ? (PROPS[spec.prop] ?? (() => null))(focus.x + 150 * focus.scale, focus.y + 135 * focus.scale, t, focus.scale) : null}
       {set.Front && kind !== 'insert' ? <set.Front t={t} v={spec.v ?? {}} /> : null}
       {kind === 'punch' ? <FocusRings x={head.x} y={head.y} t={t} /> : null}
-      {kind === 'card' ? <TitleCard t={t} lines={[text[0] ?? '', text[1] ?? '']} accent={text[1]} /> : null}
       {kind === 'diagram' ? (
         <>
-          <SchLabel x={960} y={330} t={t} text={text[0] ?? ''} size={64} anchor="middle" />
+          <Panel t={t} text={text[0] ?? ''} skin={spec.skin} />
           {spec.num !== undefined ? <CountUp x={960} y={640} t={t - 6} to={spec.num} dur={36} size={170} /> : null}
           <Arrow x0={420} y0={820} x1={1500} y1={820} t={t - 4} dur={24} bend={-60} />
         </>
@@ -259,6 +349,9 @@ export const SpecShot: React.FC<{ spec: Spec; t: number; len: number; f: number 
       <g transform={en.tr} filter={en.whip ? `url(#cw${uid})` : blurIn ? `url(#cb${uid})` : undefined} mask={iris ? `url(#ci${uid})` : undefined}>
         <g filter={sat !== undefined ? `url(#cs${uid})` : undefined}>{world}</g>
         <Light name={spec.light} t={t} uid={uid} />
+        <Light name={spec.tone ? `tone_${spec.tone}` : undefined} t={t} uid={`${uid}t`} />
+        {kind === 'card' ? <Card t={t} lines={text} style={spec.title} /> : null}
+        {kind === 'options' ? <Options t={t} items={spec.items ?? []} style={spec.opt} skin={spec.skin} /> : null}
         {spec.ots ? (
           <Foreground blur={10}>
             <Hero look={LOOKS[spec.ots as CastName] ?? LOOKS.mo} pose={{ ...basePose, x: 250, y: 1000, scale: 2.4, yaw: 0.85, facing: 1 }} />

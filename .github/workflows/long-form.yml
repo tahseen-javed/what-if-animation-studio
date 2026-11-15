@@ -31,7 +31,7 @@ jobs:
       - run: pip install -q numpy
       - id: p
         run: python tools/longform.py prep "$VIDEO" --chapter-seconds "${{ inputs.chapter_seconds }}"
-      - run: tar czf prep.tgz videos/"$VIDEO" dna/"$VIDEO".json what-if-studio/src/episodes/"$VIDEO"-c*
+      - run: tar czf prep.tgz videos/"$VIDEO"/script.txt videos/"$VIDEO"/video.json videos/"$VIDEO"/chapters.json dna/"$VIDEO".json what-if-studio/src/episodes/"$VIDEO"-c*
       - uses: actions/upload-artifact@v4
         with: { name: prep, path: prep.tgz, retention-days: 7 }
 
@@ -74,7 +74,7 @@ jobs:
         with: { python-version: "3.11" }
       - uses: actions/download-artifact@v4
         with: { pattern: "{prep,voice-*}", merge-multiple: true, path: dl }
-      - run: for f in dl/*.tgz; do tar xzf "$f"; done && sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg && pip install -q numpy
+      - run: for f in dl/prep.tgz dl/voice-*.tgz; do tar xzf "$f"; done && sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg && pip install -q numpy
       - run: python tools/director.py "$VIDEO"
       - run: tar czf plans.tgz videos/"$VIDEO" what-if-studio/out/"$VIDEO"-c*/plan.json what-if-studio/public/"$VIDEO"-c*/music.wav what-if-studio/public/"$VIDEO"-c*/sfx.wav
       - uses: actions/upload-artifact@v4
@@ -119,7 +119,8 @@ jobs:
         with: { python-version: "3.11" }
       - uses: actions/download-artifact@v4
         with: { pattern: "{prep,plans,voice-*,chapter-*}", merge-multiple: true, path: dl }
-      - run: for f in dl/*.tgz; do tar xzf "$f"; done && sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg && pip install -q numpy
+      - name: Unpack this run's artifacts in pipeline order (later stages overwrite earlier ones, never the reverse)
+        run: for f in dl/prep.tgz dl/voice-*.tgz dl/plans.tgz dl/chapter-*.tgz; do tar xzf "$f"; done && sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg && pip install -q numpy
       - run: python tools/longform.py join "$VIDEO"
       - name: Video Doctor
         run: python tools/doctor.py "$VIDEO" | tee doctor.txt
