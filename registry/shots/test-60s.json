@@ -1,0 +1,146 @@
+{
+ "video": "test-60s",
+ "created": "2026-11-15T14:05:12+00:00",
+ "shots": [
+  {
+   "set": "study",
+   "angle": "wide",
+   "cam": "pullOut",
+   "light": "night",
+   "pose": "lean",
+   "trans": "dipBlack",
+   "prop": "",
+   "tuple": "study|wide|night|lean|pullOut||dipBlack"
+  },
+  {
+   "set": "study",
+   "angle": "extremeClose",
+   "cam": "settle",
+   "light": "night",
+   "pose": "shrug",
+   "trans": "cut",
+   "prop": "Amp",
+   "tuple": "study|extremeClose|night|shrug|settle|Amp|cut"
+  },
+  {
+   "set": "study",
+   "angle": "mediumLow",
+   "cam": "panLeft",
+   "light": "night",
+   "pose": "nod",
+   "trans": "blur",
+   "prop": "",
+   "tuple": "study|mediumLow|night|nod|panLeft||blur"
+  },
+  {
+   "set": "study",
+   "angle": "wide",
+   "cam": "settle",
+   "light": "night",
+   "pose": "crossArms",
+   "trans": "cut",
+   "prop": "",
+   "tuple": "study|wide|night|crossArms|settle||cut"
+  },
+  {
+   "set": "stairwell",
+   "angle": "twoShot",
+   "cam": "drift",
+   "light": "noir",
+   "pose": "point",
+   "trans": "dipWhite",
+   "prop": "",
+   "tuple": "stairwell|twoShot|noir|point|drift||dipWhite"
+  },
+  {
+   "set": "stairwell",
+   "angle": "mediumLow",
+   "cam": "riseUp",
+   "light": "noir",
+   "pose": "present",
+   "trans": "cut",
+   "prop": "",
+   "tuple": "stairwell|mediumLow|noir|present|riseUp||cut"
+  },
+  {
+   "set": "stairwell",
+   "angle": "twoShot",
+   "cam": "pullOut",
+   "light": "noir",
+   "pose": "tremble",
+   "trans": "cut",
+   "prop": "Guitar",
+   "tuple": "stairwell|twoShot|noir|tremble|pullOut|Guitar|cut"
+  },
+  {
+   "set": "rooftop",
+   "angle": "wide",
+   "cam": "settle",
+   "light": "noir",
+   "pose": "card",
+   "trans": "zoom",
+   "prop": "",
+   "tuple": "rooftop|wide|noir|card|settle||zoom"
+  },
+  {
+   "set": "rooftop",
+   "angle": "mediumLow",
+   "cam": "dollyZoom",
+   "light": "noir",
+   "pose": "crossArms",
+   "trans": "blur",
+   "prop": "Guitar",
+   "tuple": "rooftop|mediumLow|noir|crossArms|dollyZoom|Guitar|blur"
+  },
+  {
+   "set": "rooftop",
+   "angle": "twoShot",
+   "cam": "arc",
+   "light": "noir",
+   "pose": "shock",
+   "trans": "cut",
+   "prop": "",
+   "tuple": "rooftop|twoShot|noir|shock|arc||cut"
+  },
+  {
+   "set": "lounge",
+   "angle": "mediumLow",
+   "cam": "tiltUp",
+   "light": "storm",
+   "pose": "lookAround",
+   "trans": "dipBlack",
+   "prop": "",
+   "tuple": "lounge|mediumLow|storm|lookAround|tiltUp||dipBlack"
+  },
+  {
+   "set": "lounge",
+   "angle": "close",
+   "cam": "crashZoom",
+   "light": "storm",
+   "pose": "shock",
+   "trans": "flash",
+   "prop": "",
+   "tuple": "lounge|close|storm|shock|crashZoom||flash"
+  },
+  {
+   "set": "lounge",
+   "angle": "wide",
+   "cam": "dollyZoom",
+   "light": "storm",
+   "pose": "breathe",
+   "trans": "cut",
+   "prop": "Guitar",
+   "tuple": "lounge|wide|storm|breathe|dollyZoom|Guitar|cut"
+  },
+  {
+   "set": "classroom",
+   "angle": "mediumLow",
+   "cam": "tiltUp",
+   "light": "dusk",
+   "pose": "shrug",
+   "trans": "blur",
+   "prop": "",
+   "tuple": "classroom|mediumLow|dusk|shrug|tiltUp||blur"
+  }
+ ]
+}

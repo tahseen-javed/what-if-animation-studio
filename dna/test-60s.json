@@ -1,0 +1,67 @@
+{
+ "video": "test-60s",
+ "seed": 4184107358,
+ "created": "2026-11-15T14:05:12+00:00",
+ "dims": {
+  "palette": "sunbleached",
+  "lighting": "drama",
+  "camGrammar": "epic",
+  "transitionSet": "cinematic",
+  "titleLook": "stacked",
+  "uiSkin": "glass",
+  "optionCard": "tiles",
+  "music": "music-b8bb1e95",
+  "moodArc": "mystery-reveal",
+  "ambience": "roof_wind",
+  "pacing": "steady",
+  "intensity": "low-high",
+  "outfit": "pipHood+mom",
+  "theme": "mixed",
+  "colourScript": "steady"
+ },
+ "render": {
+  "grade": "brightness(1.08) saturate(0.85) sepia(0.12)",
+  "lights": [
+   "storm",
+   "noir",
+   "alarm",
+   "dusk"
+  ],
+  "cams": [
+   "riseUp",
+   "arc",
+   "pullOut",
+   "tiltUp",
+   "dollyZoom"
+  ],
+  "tempo": 1.1,
+  "angles": [
+   "wide",
+   "wideLow",
+   "mediumLow",
+   "twoShot"
+  ],
+  "transitions": [
+   "dipBlack",
+   "cut",
+   "blur",
+   "dipWhite"
+  ],
+  "pacing": [
+   1,
+   1,
+   1
+  ],
+  "hero": "pipHood",
+  "friend": "mom",
+  "grain": false,
+  "vignette": true
+ },
+ "novelty": {
+  "min_dims_diff_last50": 15,
+  "min_dist_all": 1.0,
+  "tries": 1,
+  "ok": true,
+  "compared": 0
+ }
+}

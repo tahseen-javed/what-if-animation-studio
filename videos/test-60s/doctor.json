@@ -1,0 +1,200 @@
+{
+ "video": "test-60s",
+ "checks": [
+  {
+   "check": "length_s",
+   "ok": false,
+   "value": 43.8,
+   "limit": "60s +-15%",
+   "severity": "warn"
+  },
+  {
+   "check": "loudness_lufs",
+   "ok": true,
+   "value": -14.1,
+   "limit": "-14 +-0.5",
+   "severity": "ok"
+  },
+  {
+   "check": "true_peak_dbtp",
+   "ok": true,
+   "value": -1.9,
+   "limit": "<= -1.5",
+   "severity": "ok"
+  },
+  {
+   "check": "black_frames",
+   "ok": true,
+   "value": 0,
+   "limit": 0,
+   "severity": "ok"
+  },
+  {
+   "check": "frozen_frames",
+   "ok": true,
+   "value": 0,
+   "limit": 0,
+   "severity": "ok"
+  },
+  {
+   "check": "av_sync_s",
+   "ok": true,
+   "value": -0.081,
+   "limit": "<= 0.1",
+   "severity": "ok"
+  },
+  {
+   "check": "shot_count",
+   "ok": false,
+   "value": 14,
+   "limit": [
+    15,
+    20
+   ],
+   "severity": "fail"
+  },
+  {
+   "check": "shot_len_s",
+   "ok": true,
+   "value": [
+    1.61,
+    4.77
+   ],
+   "limit": [
+    1.5,
+    8.0
+   ],
+   "severity": "ok"
+  },
+  {
+   "check": "hook_shots_8s",
+   "ok": true,
+   "value": 5,
+   "limit": ">= 3",
+   "severity": "ok"
+  },
+  {
+   "check": "interrupt_max_gap_s",
+   "ok": true,
+   "value": 16.9,
+   "limit": "<= 15(+3 at the end)",
+   "severity": "ok"
+  },
+  {
+   "check": "locations",
+   "ok": true,
+   "value": 5,
+   "limit": [
+    4,
+    5
+   ],
+   "severity": "ok"
+  },
+  {
+   "check": "consecutive_framing",
+   "ok": true,
+   "value": 0,
+   "limit": 0,
+   "severity": "ok"
+  },
+  {
+   "check": "background_return_20s",
+   "ok": true,
+   "value": 0,
+   "limit": 0,
+   "severity": "ok"
+  },
+  {
+   "check": "tuple_repeats",
+   "ok": true,
+   "value": 0,
+   "limit": 0,
+   "severity": "ok"
+  },
+  {
+   "check": "voice_vs_script_pct",
+   "ok": false,
+   "value": 91.5,
+   "limit": ">= 95",
+   "severity": "fail"
+  },
+  {
+   "check": "speaking_rate_wpm",
+   "ok": false,
+   "value": 197,
+   "limit": [
+    125,
+    150
+   ],
+   "severity": "warn"
+  },
+  {
+   "check": "music_present",
+   "ok": true,
+   "value": [
+    0.0049,
+    0.0049
+   ],
+   "limit": "> 0.002 rms in every chapter",
+   "severity": "ok"
+  },
+  {
+   "check": "dna_novelty",
+   "ok": true,
+   "value": {
+    "min_dims_diff_last50": 15,
+    "min_dist_all": 1.0,
+    "tries": 1,
+    "ok": true,
+    "compared": 0
+   },
+   "limit": "P-019 s1",
+   "severity": "ok"
+  },
+  {
+   "check": "jaccard_vs_all",
+   "ok": true,
+   "value": 0.0,
+   "limit": "< 0.3",
+   "severity": "ok"
+  },
+  {
+   "check": "legibility_360p",
+   "ok": null,
+   "severity": "skip",
+   "value": "Phase 3",
+   "limit": ""
+  },
+  {
+   "check": "overlay_overlap",
+   "ok": null,
+   "severity": "skip",
+   "value": "Phase 3",
+   "limit": ""
+  },
+  {
+   "check": "character_consistency",
+   "ok": null,
+   "severity": "skip",
+   "value": "Phase 3",
+   "limit": ""
+  },
+  {
+   "check": "banding_flicker",
+   "ok": null,
+   "severity": "skip",
+   "value": "Phase 3",
+   "limit": ""
+  },
+  {
+   "check": "perceptual_diversity_openclip",
+   "ok": null,
+   "severity": "skip",
+   "value": "Phase 3",
+   "limit": ""
+  }
+ ],
+ "fixes": [],
+ "fails": 2,
+ "warns": 2
+}
