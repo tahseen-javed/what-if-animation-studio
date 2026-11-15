@@ -49,6 +49,17 @@ def keywords(text, n=2):
     return (ws + ['WHAT', 'NEXT?'])[:n]
 
 
+def card_lines(text):
+    """A title card shows the shot's own words: its fullest sentence, up to 6 words, on two lines."""
+    sents = [s.strip() for s in re.split(r'(?<=[.!?])\s+', text) if s.strip()]
+    best = max(sents, key=lambda s: min(len(s.split()), 6), default='')
+    ws = [w for w in (re.sub(r"[^\w'?!]", '', w).upper() for w in best.split()[:6]) if w]
+    if len(ws) < 2:
+        return keywords(text)
+    h = (len(ws) + 1) // 2
+    return [' '.join(ws[:h]), ' '.join(ws[h:])]
+
+
 def combo_counts(vid):
     rows = [load(p) for p in sorted((ROOT / 'registry' / 'shots').glob('*.json'))]
     rows = sorted([r for r in rows if r and r['video'] != vid], key=lambda r: r.get('created', ''))[-100:]
@@ -70,7 +81,7 @@ def main(vid):
     counts = combo_counts(vid)
     durs = [duration(STUDIO / 'public' / c['slug'] / 'voice.wav') for c in chs]
     total_video = sum(durs) + 0.35 * len(durs)
-    lastbg, used, prev_poses, shotlist = {}, set(), [], []
+    lastbg, used, prev_poses, shotlist, used_props = {}, set(), [], [], set()
     prev_angle, offset, scene = None, 0.0, None
     next_int = rng.uniform(*B['interrupt_gap_s'])
     ints = ['card', 'insert', 'punch', 'diagram']
@@ -87,7 +98,8 @@ def main(vid):
         light = rng.choice(['night', 'moonlight']) if v.get('night') else rng.choice(R['lights'])
         friend = rng.random() < 0.45
         hm = rng.choice([0, 2]) if friend else 1
-        return {'set': s, 'v': v, 'light': light, 'friend': friend, 'hm': hm, 'fm': 2 - hm, 'left': rng.randint(2, 4), 'first': True}
+        left = 1 if g0 < B['hook_s'] else rng.randint(2, 4)  # the hook is a montage: a new place every shot
+        return {'set': s, 'v': v, 'light': light, 'friend': friend, 'hm': hm, 'fm': 2 - hm, 'left': left, 'first': True}
 
     for ci, (ch, D) in enumerate(zip(chs, durs)):
         slug, W = ch['slug'], load(STUDIO / 'src' / 'episodes' / ch['slug'] / 'words.json', [])
@@ -124,9 +136,11 @@ def main(vid):
                 spec.update(kind=kind, set=scene['set'], v=scene['v'], light=scene['light'], angle='wide', cam=rng.choice(['pushIn', 'settle', 'drift']),
                             trans=rng.choice(['flash', 'zoom', 'whip', 'dipWhite']))
                 if kind == 'card':
-                    spec.update(text=keywords(text), v={**scene['v'], 'veil': 0.25})
+                    spec.update(text=card_lines(text), v={**scene['v'], 'veil': 0.25})
                 elif kind == 'insert':
-                    spec.update(prop=rng.choice(LIB['props']['insert']), cam=rng.choice(R['cams']))
+                    free = [p for p in LIB['props']['insert'] if p not in used_props] or LIB['props']['insert']
+                    spec.update(prop=rng.choice(free), cam=rng.choice(R['cams']))
+                    used_props.add(spec['prop'])
                 elif kind == 'diagram':
                     nums = re.findall(r'\d[\d,]*', text)
                     spec.update(set='schematic', text=keywords(text, 1), light='neutral')
@@ -148,7 +162,8 @@ def main(vid):
                         trans = rng.choice([x for x in R['transitions'] if x != 'cut'] or ['cut'])
                     else:
                         trans = 'cut' if rng.random() < 0.65 else rng.choice(R['transitions'])
-                    prop = rng.choice(LIB['props']['floor']) if rng.random() < 0.2 else ''
+                    free = [p for p in LIB['props']['floor'] if p not in used_props] or LIB['props']['floor']
+                    prop = rng.choice(free) if rng.random() < 0.12 else ''
                     tup = '|'.join(map(str, (scene['set'], angle, scene['light'], pose, cam, prop, trans)))
                     if tup not in used and counts.get(f"{scene['set']}|{angle}|{cam}", 0) < cap:
                         break
@@ -164,6 +179,7 @@ def main(vid):
                 spec.update(kind='scene', set=scene['set'], v=scene['v'], light=scene['light'], angle=angle, cam=cam, trans=trans, cast=cast, focus=focus)
                 if prop:
                     spec['prop'] = prop
+                    used_props.add(prop)
                 if spec_ots:
                     spec['ots'] = spec_ots
                 if not hx['cast']:

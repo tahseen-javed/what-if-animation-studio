@@ -46,13 +46,14 @@ def check(vid):
     v, a = streams(final)
     add('av_sync_s', abs(v - a) <= 0.1, round(v - a, 3), '<= 0.1')
     lens = [s['g1'] - s['g0'] for s in shots]
-    add('shot_count', B['shots'][0] <= len(shots) <= B['shots'][1], len(shots), B['shots'])
+    Ba = budget(L / 60)  # density limits follow the real length; the length itself is checked above
+    add('shot_count', Ba['shots'][0] <= len(shots) <= Ba['shots'][1], len(shots), Ba['shots'])
     add('shot_len_s', all(1.5 - 0.05 <= x <= 8.0 for x in lens), [round(min(lens), 2), round(max(lens), 2)], B['shot_len_s'])
     add('hook_shots_8s', sum(1 for s in shots if s['g0'] < B['hook_s']) >= B['hook_min_shots'], sum(1 for s in shots if s['g0'] < B['hook_s']), f">= {B['hook_min_shots']}")
     ints = [s['g0'] for s in shots if s['interrupt']]
     gaps = [b - a for a, b in zip([0.0] + ints, ints + [L])]
     add('interrupt_max_gap_s', max(gaps) <= B['interrupt_gap_s'][1] + 3, round(max(gaps), 1), f"<= {B['interrupt_gap_s'][1]}(+3 at the end)", 'warn')
-    add('locations', len(sl['locations']) >= B['locations'][0], len(sl['locations']), B['locations'])
+    add('locations', len(sl['locations']) >= Ba['locations'][0], len(sl['locations']), Ba['locations'])
     add('consecutive_framing', all(x['angle'] != y['angle'] for x, y in zip(shots, shots[1:])), sum(x['angle'] == y['angle'] for x, y in zip(shots, shots[1:])), 0)
     last, bad, prev = {}, 0, None
     for s in shots:  # a background may continue inside its scene, but may not come back within 20 s after leaving

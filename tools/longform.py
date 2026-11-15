@@ -7,8 +7,8 @@ import json, os, re, subprocess, sys
 from common import ROOT, STUDIO, load, save, vdir
 import dna as dnamod
 
-VOICE = {'seed': 1234, 'exaggeration': 0.5, 'cfg_weight': 0.5, 'temperature': 0.8, 'beat_pause': 0.22}
-GAPS = {'word': 0.15, 'comma': 0.28, 'sentence': 0.45, 'question': 0.55}
+VOICE = {'seed': 1234, 'exaggeration': 0.5, 'cfg_weight': 0.5, 'temperature': 0.8, 'beat_pause': 0.35, 'target_wpm': 140}
+GAPS = {'word': 0.18, 'comma': 0.35, 'sentence': 0.6, 'question': 0.7}
 
 
 def prep(vid, chapter_seconds=75.0):

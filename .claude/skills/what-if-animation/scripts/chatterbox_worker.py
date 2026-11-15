@@ -1,7 +1,7 @@
 """Runs INSIDE the Chatterbox environment (called by voice.py): python chatterbox_worker.py job.json
 Synthesizes each script beat with Chatterbox TTS (cached per beat, fixed seed), joins them, then aligns the script
 words to the audio with faster-whisper so plan.py can cue cuts on words. Writes the wav and words_raw.json."""
-import difflib, hashlib, json, pathlib, re, sys, time
+import difflib, hashlib, json, pathlib, re, subprocess, sys, time
 
 import numpy as np
 import soundfile as sf
@@ -53,26 +53,63 @@ def toks(text):
 
 
 norm = lambda s: re.sub(r"[^\w]", '', s.lower())
+ONES = 'zero one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen'.split()
+TENS = 'x x twenty thirty forty fifty sixty seventy eighty ninety'.split()
+
+
+def say(n):
+    """A number as words, so whisper's "2,500" lines up with a script's "two thousand five hundred"."""
+    if n < 20:
+        return [ONES[n]]
+    if n < 100:
+        return [TENS[n // 10]] + ([ONES[n % 10]] if n % 10 else [])
+    if n < 1000:
+        return [ONES[n // 100], 'hundred'] + (say(n % 100) if n % 100 else [])
+    for d, w in ((10 ** 9, 'billion'), (10 ** 6, 'million'), (1000, 'thousand')):
+        if n >= d:
+            return say(n // d) + [w] + (say(n % d) if n % d else [])
+
+
+def stretch(x, k):
+    """Slow speech to tempo k without changing pitch (rubberband, else atempo)."""
+    if abs(k - 1) < 0.01:
+        return x
+    for af in (f'rubberband=tempo={k:.4f}', f'atempo={k:.4f}'):
+        r = subprocess.run(['ffmpeg', '-v', 'error', '-f', 'f32le', '-ar', str(SR), '-ac', '1', '-i', '-', '-af', af, '-f', 'f32le', '-'],
+                           input=np.asarray(x, dtype=np.float32).tobytes(), capture_output=True)
+        if r.returncode == 0 and r.stdout:
+            return np.frombuffer(r.stdout, dtype=np.float32)
+    return x
 whisper = WhisperModel(O['whisper'], device='cpu', compute_type='int8')
 pause = np.zeros(int(O['beat_pause'] * SR), dtype=np.float32)
 audio, words, off, matched, total = [], [], 0.0, 0, 0
-for text in job['beats']:
-    x = synth(text)
+beats = [synth(text) for text in job['beats']]
+nwords = sum(len(toks(t)) for t in job['beats'])
+est = sum(len(x) for x in beats) / SR + O['beat_pause'] * (len(beats) - 1)
+tempo = min(1.0, max(0.78, O['target_wpm'] / (60 * nwords / est))) if O.get('target_wpm') else 1.0
+print(f'  natural pace {60 * nwords / est:.0f} wpm -> tempo {tempo:.3f}', flush=True)
+for text, x in zip(job['beats'], beats):
+    x = stretch(x, tempo)
     dur = len(x) / SR
     S = toks(text)
     segs, _ = whisper.transcribe(torchaudio.functional.resample(torch.from_numpy(x), SR, 16000).numpy(), language='en', word_timestamps=True, beam_size=5)
     W = []
     for seg in segs:
         for wd in seg.words:
-            parts = re.findall(r"[\w'’]+", wd.word)
+            raw = wd.word.strip()
+            num = re.fullmatch(r'\$?(\d[\d,]*)(?:st|nd|rd|th)?[.,!?]*', raw)
+            parts = say(int(num.group(1).replace(',', ''))) if num else re.findall(r"[\w'’]+", raw)
             for k, part in enumerate(parts):
                 d = (wd.end - wd.start) / len(parts)
                 W.append((norm(part), wd.start + k * d, wd.start + (k + 1) * d))
     n = len(S)
     st, en = [None] * n, [None] * n
-    for b in difflib.SequenceMatcher(None, [norm(t['w']) for t in S], [w[0] for w in W], autojunk=False).get_matching_blocks():
-        for k in range(b.size):
-            st[b.a + k], en[b.a + k] = W[b.b + k][1], W[b.b + k][2]
+    A, Bw = [norm(t['w']) for t in S], [w[0] for w in W]
+    for tag, i1, i2, j1, j2 in difflib.SequenceMatcher(None, A, Bw, autojunk=False).get_opcodes():
+        if tag == 'equal' or (tag == 'replace' and i2 - i1 == j2 - j1):  # spelling variants count (neighbours/neighbors)
+            for k in range(i2 - i1):
+                if tag == 'equal' or difflib.SequenceMatcher(None, A[i1 + k], Bw[j1 + k]).ratio() >= 0.75:
+                    st[i1 + k], en[i1 + k] = W[j1 + k][1], W[j1 + k][2]
     matched += sum(v is not None for v in st)
     total += n
     i = 0

@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Study, STUDY, Kitchen, KITCHEN, KitchenIsland, Lounge, LOUNGE, Bedroom, BEDROOM, Classroom, Rooftop, Stairwell, Banister,
+  Study, STUDY, Kitchen, KITCHEN, KitchenIsland, Lounge, LOUNGE, Bedroom, BEDROOM, Classroom, Rooftop, Stairwell,
   hipGround, Apartments, Schematic, stand, Room,
 } from '../engine';
 
@@ -30,7 +30,8 @@ export const SETS: Record<string, SetDef> = {
     Back: ({ t, v }) => <Rooftop t={t} sunY={n(v.sunY, 640)} red={n(v.red, 0)} cityLit={n(v.cityLit, 1)} />,
     marks: [700, 960, 1220].map((x) => ({ x, y: 820 - 140, scale: 1 })),
   },
-  stairwell: { Back: ({ t, id }) => <Stairwell t={t} id={id} />, Front: () => <Banister />, marks: [640, 900, 1160].map((x) => ({ x, y: hipGround(x), scale: 0.9 })) },
+  // No Banister front layer: at these marks it crossed the characters' faces (Phase 1 board check).
+  stairwell: { Back: ({ t, id }) => <Stairwell t={t} id={id} />, marks: [640, 900, 1160].map((x) => ({ x, y: hipGround(x), scale: 0.9 })) },
   apartments: { Back: ({ t, v, id }) => <Apartments t={t} id={id} seed={n(v.seed, 9)} others={n(v.others, 0.3)} />, marks: [] },
   schematic: { Back: ({ t, id }) => <Schematic t={t} id={id} />, marks: [] },
 };
