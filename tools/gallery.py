@@ -31,6 +31,10 @@ x = (torch.tensor(imgs, dtype=torch.float32).permute(0, 3, 1, 2) - torch.tensor(
 with torch.no_grad():
     e = torch.nn.functional.normalize(m(x), dim=1).numpy()
 rd = 1 - e @ e.T  # secondary: ResNet-18 (limit 0.15 kept, reported only)
+# brightness floor: mean luminance per set; the floor is 90% of the darkest hand-made (approved) set
+lum = {s: round(float((imgs[i] @ np.array([0.299, 0.587, 0.114])).mean()), 3) for i, s in enumerate(sets)}
+made = [s for s in LIB['sets'] if LIB['sets'][s]['cast'] and not LIB['sets'][s].get('proc') and not LIB['sets'][s].get('ext')]
+floor = round(0.9 * min(lum[s] for s in made if s in lum), 3) if any(s in lum for s in made) else None
 import open_clip  # noqa: E402  primary: OpenCLIP ViT-B-32 laion2b_s34b_b79k (MIT code and weights, docs/LICENSES_QA.md)
 from PIL import Image, ImageDraw, ImageFont  # noqa: E402
 
@@ -42,7 +46,8 @@ pairs = sorted((float(d[i, j]), float(rd[i, j]), sets[i], sets[j]) for i in rang
 rep = {'sets': sets, 'metric': 'OpenCLIP ViT-B-32 laion2b_s34b_b79k cosine distance', 'min_distance': round(pairs[0][0], 3),
        'median_distance': round(float(np.median([p[0] for p in pairs])), 3), 'closest_pairs': [[round(a, 3), b, c] for a, _, b, c in pairs[:6]],
        'threshold': None, 'ok': None, 'note': 'CLIP limit pending owner calibration (calibration.jpg)',
-       'resnet18': {'min_distance': round(min(p[1] for p in pairs), 3), 'limit': 0.15, 'ok': min(p[1] for p in pairs) >= 0.15}}
+       'resnet18': {'min_distance': round(min(p[1] for p in pairs), 3), 'limit': 0.15, 'ok': min(p[1] for p in pairs) >= 0.15},
+       'brightness': {'floor': floor, 'dark_sets': {s: v for s, v in lum.items() if floor and v < floor}, 'per_set': lum}}
 if label == 'all':  # owner calibration: the 5 most similar and 5 clearly different pairs, one sheet
     cal = pairs[:5] + pairs[-5:]
     big = np.frombuffer(subprocess.run(['ffmpeg', '-v', 'error', '-i', str(out / 'board.mp4'), '-vf', 'scale=480:270', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-'],
@@ -57,4 +62,4 @@ if label == 'all':  # owner calibration: the 5 most similar and 5 clearly differ
     sheet.save(out / 'calibration.jpg', quality=88)
     rep['calibration_pairs'] = [{'n': k + 1, 'a': a, 'b': b, 'clip': round(cd, 3), 'resnet': round(r, 3)} for k, (cd, r, a, b) in enumerate(cal)]
 save(out / 'distances.json', rep)
-print(json.dumps({k: rep[k] for k in ('min_distance', 'median_distance', 'closest_pairs', 'resnet18')}))
+print(json.dumps({k: rep[k] for k in ('min_distance', 'median_distance', 'closest_pairs', 'resnet18')}), json.dumps({'floor': floor, 'dark': rep['brightness']['dark_sets']}))

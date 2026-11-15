@@ -209,6 +209,54 @@
    "cast": true,
    "variants": {},
    "proc": true
+  },
+  "desert": {
+   "theme": "desert",
+   "cast": true,
+   "variants": {},
+   "ext": true
+  },
+  "beach": {
+   "theme": "sea",
+   "cast": true,
+   "variants": {},
+   "ext": true
+  },
+  "forest": {
+   "theme": "forest",
+   "cast": true,
+   "variants": {},
+   "ext": true
+  },
+  "arctic": {
+   "theme": "arctic",
+   "cast": true,
+   "variants": {},
+   "ext": true
+  },
+  "mountains": {
+   "theme": "mountain",
+   "cast": true,
+   "variants": {},
+   "ext": true
+  },
+  "cityStreet": {
+   "theme": "city",
+   "cast": true,
+   "variants": {},
+   "ext": true
+  },
+  "market": {
+   "theme": "market",
+   "cast": true,
+   "variants": {},
+   "ext": true
+  },
+  "moonBase": {
+   "theme": "space",
+   "cast": true,
+   "variants": {},
+   "ext": true
   }
  },
  "angles": {
@@ -997,17 +1045,17 @@
     420
    ],
    "back": [
-    820,
-    1100,
-    360,
-    640
+    700,
+    1220,
+    340,
+    680
    ],
-   "depth": 4.6,
+   "depth": 4.0,
    "floor": "tiles",
-   "wall": "#23313F",
-   "side": "#1B2733",
-   "floorC": "#2E3C48",
-   "ceiling": "#18222C",
+   "wall": "#3E5A6E",
+   "side": "#344C5E",
+   "floorC": "#4A6274",
+   "ceiling": "#2C4252",
    "win": [
     600,
     900,
@@ -1060,7 +1108,7 @@
      "#7FD1C7"
     ]
    ],
-   "veil": 0.3,
+   "veil": 0.12,
    "sky": "day",
    "items": [
     [
@@ -1075,7 +1123,8 @@
      0.15,
      "#2A3A48"
     ]
-   ]
+   ],
+   "glow": "cool"
   },
   "hospital": {
    "theme": "care",
@@ -1386,17 +1435,17 @@
     520
    ],
    "back": [
-    780,
-    1140,
-    340,
-    700
+    600,
+    1320,
+    320,
+    720
    ],
-   "depth": 4.4,
+   "depth": 3.6,
    "floor": "tiles",
-   "wall": "#2B3A55",
-   "side": "#223047",
-   "floorC": "#34405A",
-   "ceiling": "#1C2638",
+   "wall": "#3A4D6E",
+   "side": "#30415E",
+   "floorC": "#46597A",
+   "ceiling": "#2A3954",
    "lamps": [
     [
      0.5,
@@ -1451,7 +1500,7 @@
     ]
    ],
    "glow": "cool",
-   "veil": 0.1,
+   "veil": 0.05,
    "pend": [
     [
      0.3,
@@ -1765,8 +1814,8 @@
     700
    ],
    "depth": 3.5,
-   "wall": "#6A605A",
-   "side": "#564D48",
+   "wall": "#7A6F68",
+   "side": "#665C56",
    "floorC": "#3E3834",
    "ceiling": "#2E2926",
    "win": [
@@ -1819,7 +1868,7 @@
      "#A8845C"
     ]
    ],
-   "veil": 0.3,
+   "veil": 0.2,
    "items": [
     [
      "sofa",
@@ -2109,6 +2158,311 @@
      0.2,
      0.5,
      0.4
+    ]
+   ]
+  }
+ },
+ "ext": {
+  "desert": {
+   "theme": "desert",
+   "sky": [
+    "#F6B26B",
+    "#FCE5CD"
+   ],
+   "horizon": 640,
+   "ground": [
+    "#E2B36B",
+    "#C68A45"
+   ],
+   "sun": [
+    1450,
+    300,
+    80,
+    "#FFF4C2"
+   ],
+   "ridges": [
+    [
+     640,
+     90,
+     2,
+     "#D9A35E"
+    ],
+    [
+     660,
+     50,
+     7,
+     "#CC9450"
+    ]
+   ],
+   "items": [
+    [
+     "cacti",
+     860,
+     4,
+     "#4E7F3A",
+     5
+    ]
+   ],
+   "haze": "#FFE0B0"
+  },
+  "beach": {
+   "theme": "sea",
+   "sky": [
+    "#7EC8E3",
+    "#D7F0F7"
+   ],
+   "horizon": 560,
+   "ground": [
+    "#2E86AB",
+    "#1B5E7A"
+   ],
+   "sun": [
+    500,
+    360,
+    70,
+    "#FFF7D6"
+   ],
+   "items": [
+    [
+     "waves",
+     600,
+     0,
+     "#FFFFFF",
+     0
+    ],
+    [
+     "rocks",
+     900,
+     3,
+     "#C8B48A",
+     4
+    ]
+   ],
+   "haze": "#FFFFFF"
+  },
+  "forest": {
+   "theme": "forest",
+   "sky": [
+    "#9DD3A8",
+    "#E7F5E9"
+   ],
+   "horizon": 650,
+   "ground": [
+    "#4E7A3A",
+    "#2F4F24"
+   ],
+   "ridges": [
+    [
+     650,
+     160,
+     3,
+     "#5E8F59"
+    ],
+    [
+     670,
+     90,
+     9,
+     "#467246"
+    ]
+   ],
+   "items": [
+    [
+     "trees",
+     700,
+     9,
+     "#2F6B3A",
+     2
+    ],
+    [
+     "trees",
+     900,
+     5,
+     "#24572F",
+     8
+    ]
+   ]
+  },
+  "arctic": {
+   "theme": "arctic",
+   "sky": [
+    "#B9D9F2",
+    "#F2F8FC"
+   ],
+   "horizon": 620,
+   "ground": [
+    "#F4F8FB",
+    "#D6E4EE"
+   ],
+   "sun": [
+    1500,
+    470,
+    60,
+    "#FFFDF0"
+   ],
+   "ridges": [
+    [
+     620,
+     200,
+     4,
+     "#DCE9F3"
+    ],
+    [
+     640,
+     110,
+     12,
+     "#C7DBEA"
+    ]
+   ],
+   "items": [
+    [
+     "rocks",
+     880,
+     3,
+     "#9FB3C4",
+     6
+    ]
+   ],
+   "haze": "#FFFFFF"
+  },
+  "mountains": {
+   "theme": "mountain",
+   "sky": [
+    "#3E3B73",
+    "#F29E6D"
+   ],
+   "horizon": 700,
+   "ground": [
+    "#5B4A3A",
+    "#3A2F26"
+   ],
+   "sun": [
+    960,
+    640,
+    90,
+    "#FFC48A"
+   ],
+   "ridges": [
+    [
+     700,
+     420,
+     1,
+     "#4B3F6B"
+    ],
+    [
+     700,
+     260,
+     6,
+     "#2F2A4A"
+    ],
+    [
+     720,
+     120,
+     13,
+     "#2A2238"
+    ]
+   ]
+  },
+  "cityStreet": {
+   "theme": "city",
+   "sky": [
+    "#0B1026",
+    "#2B2F5A"
+   ],
+   "horizon": 700,
+   "ground": [
+    "#2B2B33",
+    "#1B1B22"
+   ],
+   "stars": 60,
+   "items": [
+    [
+     "buildings",
+     700,
+     6,
+     "#1E2236",
+     3,
+     "#FFD27A"
+    ],
+    [
+     "lamps",
+     900,
+     4,
+     "#FFD27A",
+     2
+    ]
+   ]
+  },
+  "market": {
+   "theme": "market",
+   "sky": [
+    "#FFD39B",
+    "#FFF1D6"
+   ],
+   "horizon": 620,
+   "ground": [
+    "#C9A27A",
+    "#A47C55"
+   ],
+   "sun": [
+    300,
+    260,
+    60,
+    "#FFF6D8"
+   ],
+   "items": [
+    [
+     "buildings",
+     620,
+     5,
+     "#D9B38C",
+     7,
+     "#7A5230"
+    ],
+    [
+     "stalls",
+     860,
+     4,
+     "#C0392B",
+     1,
+     "#FFF3E0"
+    ]
+   ]
+  },
+  "moonBase": {
+   "theme": "space",
+   "sky": [
+    "#000000",
+    "#0B0F1E"
+   ],
+   "horizon": 700,
+   "ground": [
+    "#8C8C8C",
+    "#5A5A5A"
+   ],
+   "stars": 140,
+   "ridges": [
+    [
+     700,
+     80,
+     5,
+     "#6E6E6E"
+    ]
+   ],
+   "items": [
+    [
+     "planet",
+     1400,
+     260,
+     "#5B8DEF",
+     110,
+     "#C9D8FF"
+    ],
+    [
+     "rocks",
+     900,
+     5,
+     "#4A4A4A",
+     9
     ]
    ]
   }

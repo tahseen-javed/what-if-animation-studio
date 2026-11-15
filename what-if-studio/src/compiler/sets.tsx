@@ -5,6 +5,7 @@ import {
 } from '../engine';
 import LIB from './library.json';
 import { ProcSet, procMarks, ProcDef } from './proc';
+import { ExtSet, extMarks, ExtDef } from './ext';
 
 // Set adapters: how the compiler draws each library set and where characters can stand on it (marks: hip point and
 // scale). A new set = one entry here + one entry in library.json (theme, variants). Front is drawn after the cast.
@@ -41,4 +42,8 @@ export const SETS: Record<string, SetDef> = {
 // Procedural interiors from library.json "proc" (proc.tsx): data only.
 for (const [k, d] of Object.entries((LIB as unknown as { proc?: Record<string, ProcDef> }).proc ?? {})) {
   SETS[k] = { Back: ({ t, id }) => <ProcSet d={d} t={t} id={id} />, marks: procMarks(d) };
+}
+// Procedural exteriors from library.json "ext" (ext.tsx).
+for (const [k, d] of Object.entries((LIB as unknown as { ext?: Record<string, ExtDef> }).ext ?? {})) {
+  SETS[k] = { Back: ({ t, id }) => <ExtSet d={d} t={t} id={id} />, marks: extMarks };
 }
