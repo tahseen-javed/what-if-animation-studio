@@ -9,6 +9,53 @@ export type ProcDef = {
   wall?: string; side?: string; floorC?: string; ceiling?: string; win?: [number, number, number, number]; night?: boolean; cols?: number; sky?: 'day' | 'blinds';
   pend?: [number, number][]; lamps?: [number, number, number][]; boxes?: BoxDef[]; plants?: [number, number][];
   frames?: [number, number, number, number][]; clock?: [number, number]; glow?: 'warm' | 'cool' | 'red'; veil?: number;
+  items?: (string | number)[][];
+};
+
+type Rm = ReturnType<typeof makeRoom>;
+const poly = (R: Rm, q: number[][]) => q.map(([u, v, w]) => { const p = R.P(u, v, w); return `${p.x},${p.y}`; }).join(' ');
+const shade = (c: string, k: number) => `#${[1, 3, 5].map((i) => Math.max(0, Math.min(255, Math.round(parseInt(c.slice(i, i + 2), 16) * k))).toString(16).padStart(2, '0')).join('')}`;
+
+/** Structural pieces: ['table'|'sofa'|'bed', u0, u1, w0, w1, colour], ['screen', u0, u1, v0, v1, colour],
+ *  ['column', u, w, colour], ['alcove', 'L'|'R', w0, w1, v0] (an opening in a side wall: an L-shaped room),
+ *  ['mezz', w1, colour] (a balcony across the back with railings and stairs). */
+const Item: React.FC<{ R: Rm; it: (string | number)[]; t: number }> = ({ R, it, t }) => {
+  const [k, a, b, c, e, col] = it as [string, number, number, number, number, string];
+  const B = (u: [number, number], v: [number, number], w: [number, number], f: string) => <Box r={R} u={u} v={v} w={w} front={f} top={shade(f, 1.2)} side={shade(f, 0.75)} rim />;
+  const leg = (u: number, w: number, v0: number) => { const p = R.P(u, v0, w); const q = R.P(u, 1, w); return <line x1={p.x} y1={p.y} x2={q.x} y2={q.y} stroke={shade(col ?? '#555555', 0.6)} strokeWidth={6} />; };
+  switch (k) {
+    case 'table':
+      return <g>{leg(a + 0.01, c + 0.01, 0.8)}{leg(b - 0.01, c + 0.01, 0.8)}{B([a, b], [0.78, 0.8], [c, e], col)}{leg(a + 0.01, e - 0.01, 0.8)}{leg(b - 0.01, e - 0.01, 0.8)}</g>;
+    case 'sofa':
+      return <g>{B([a, b], [0.7, 1], [c, c + 0.04], shade(col, 0.85))}{B([a, b], [0.86, 1], [c, e], col)}{B([a, a + 0.03], [0.8, 1], [c, e], shade(col, 0.9))}{B([b - 0.03, b], [0.8, 1], [c, e], shade(col, 0.9))}</g>;
+    case 'bed':
+      return <g>{B([a, b], [0.66, 1], [c, c + 0.02], shade(col, 0.6))}{B([a, b], [0.88, 1], [c, e], '#EDE7DA')}{B([a, b], [0.86, 0.9], [c + (e - c) * 0.35, e], col)}{B([a + 0.02, a + (b - a) * 0.45], [0.84, 0.88], [c + 0.02, c + 0.08], '#FFFFFF')}</g>;
+    case 'screen': {
+      const fl = 0.75 + 0.25 * Math.sin(t / 5);
+      return <g>{B([a, b], [c, e], [0, 0.015], '#15171C')}<polygon points={poly(R, [[a + 0.01, c + 0.02, 0.016], [b - 0.01, c + 0.02, 0.016], [b - 0.01, e - 0.02, 0.016], [a + 0.01, e - 0.02, 0.016]])} fill={col} opacity={fl} /></g>;
+    }
+    case 'column':
+      return B([a - 0.025, a + 0.025], [0, 1], [b, b + 0.04], col ?? '#BFB8AA');
+    case 'alcove': {
+      const u = it[1] === 'L' ? 0 : 1;
+      const [w0, w1, v0] = [b, c, e];
+      return <g><polygon points={poly(R, [[u, v0, w0], [u, v0, w1], [u, 1, w1], [u, 1, w0]])} fill="#0B0A10" opacity={0.85} /><polygon points={poly(R, [[u, v0 + 0.03, w0 + 0.02], [u, v0 + 0.03, w1 - 0.02], [u, 0.97, w1 - 0.02], [u, 0.97, w0 + 0.02]])} fill="#F2C46D" opacity={0.18} /></g>;
+    }
+    case 'mezz': {
+      const w1 = a as number;
+      const f = (b as unknown as string) ?? '#6B5A48';
+      return (
+        <g>
+          {B([0, 1], [0.4, 0.46], [0, w1], f)}
+          {Array.from({ length: 13 }, (_, i) => { const p = R.P(i / 12, 0.4, w1); const q = R.P(i / 12, 0.32, w1); return <line key={i} x1={p.x} y1={p.y} x2={q.x} y2={q.y} stroke={shade(f, 0.6)} strokeWidth={4} />; })}
+          <polyline points={poly(R, [[0, 0.32, w1], [1, 0.32, w1]])} stroke={shade(f, 0.6)} strokeWidth={6} fill="none" />
+          {[0, 1, 2, 3, 4, 5].map((s) => B([0.86, 0.96], [0.46 + s * 0.09, 1], [w1 + s * 0.03, w1 + (s + 1) * 0.03], shade(f, 0.9)))}
+        </g>
+      );
+    }
+    default:
+      return null;
+  }
 };
 
 const room = (d: ProcDef) => makeRoom({ x: d.vp[0], y: d.vp[1] }, { x0: d.back[0], x1: d.back[1], y0: d.back[2], y1: d.back[3] }, d.depth ?? 3.4);
@@ -59,6 +106,7 @@ export const ProcSet: React.FC<{ d: ProcDef; t: number; id: string }> = ({ d, t,
             : null}
         </g>
       ))}
+      {(d.items ?? []).map((it, i) => <Item key={i} R={R} it={it} t={t} />)}
       {(d.plants ?? []).map(([u, w], i) => <FloorPlant key={i} r={R} u={u} w={w} />)}
       {(d.pend ?? []).map(([u, w], i) => <Pendant key={i} r={R} u={u} w={w} t={t} />)}
       <LightVeil id={`${id}v`} lights={lights} o={d.veil ?? 0.38} />
